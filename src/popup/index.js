@@ -1,8 +1,22 @@
 import React from "react";
-import ReacDOM from "react-dom";
+import ReactDOM from "react-dom";
 import "./index.css";
 import Popup from "./Popup";
+import {Provider} from 'react-redux';
+import {createUIStore} from 'redux-webext';
 
-ReacDOM.render(
-    <Popup/>, document.getElementById('root')
-)
+async function initApp(){
+    const store = await createUIStore();
+
+    const mountNode = document.createElement('div');
+    document.body.appendChild(mountNode);
+
+    ReactDOM.render(
+        <Provider store={store}>
+            <Popup/>
+        </Provider>,
+        mountNode
+    );
+}
+
+initApp();

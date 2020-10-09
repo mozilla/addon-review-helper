@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from 'react';
 import "./Popup.css";
 import Box from "@material-ui/core/Box";
 import MenuList from "@material-ui/core/MenuList";
@@ -10,11 +10,17 @@ import NoteIcon from '@material-ui/icons/Note';
 import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined';
 import Button from "@material-ui/core/Button";
 import AddIcon from '@material-ui/icons/Add';
+import { openNewTab } from "../utils";
+import { connect } from "react-redux";
+import { createNote } from "../actions/notes";
+import PropTypes from 'prop-types';
 
-class Popup extends React.Component {
+
+
+class Popup extends Component {
 
     openToDoList() {
-        console.log('To-do list')
+        openNewTab("https://example.org")
     }
 
     openCategories() {
@@ -33,7 +39,18 @@ class Popup extends React.Component {
         console.log('Hidden add-ons')
     }
 
+    addNote() {
+        console.log('Add note')
+    }
+
     render() {
+        // const {
+        //     backgroundCounter,
+        //     uiCounter,
+        //     incrementUICounter,
+        //     decrementUICounter
+        // } = this.props;
+
         return (
             <div className="popup">
                 <Box>
@@ -49,13 +66,24 @@ class Popup extends React.Component {
                     color="secondary"
                     startIcon={<AddIcon />}
                     className="addNoteButton"
+                    onClick={this.addNote}
                 >
                     Add note
-      </Button>
+                </Button>
+                
             </div>
         )
     }
 }
 
-export default Popup;
+const mapDispatchToProps = {
+    addNote: createNote
+}
+
+const mapStateToProps = (state) => ({
+    createNote: state.notes.createNote
+})
+
+
+export default connect(state => state, mapDispatchToProps)(Popup);
 

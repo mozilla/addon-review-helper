@@ -20,11 +20,14 @@ module.exports = {
         publicPath: '' //were generated files are located
     },
     mode: "development",
-    devServer: {
-        contentBase: path.resolve(__dirname, './dist'),
-        index: 'index.html',
-        port: 9000
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            minSize: 10000,
+            automaticNameDelimiter: '_'
+        }
     },
+    watch: true,
     module: {
         rules: [{
                 test: /\.(png|jpg)$/,
@@ -35,7 +38,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    "style-loader", 'css-loader'
+                    MiniCssExtractPlugin.loader, 'css-loader'
                 ]
             },
             {
@@ -57,7 +60,7 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [{
-                    from: './src/manifest.json',
+                    from: './src/manifest_dev.json',
                     to: ''
                 },
                 {
@@ -65,6 +68,9 @@ module.exports = {
                     to: 'img'
                 }
             ]
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css'
         }),
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
@@ -74,7 +80,8 @@ module.exports = {
             ],
             title: 'Popup',
             description: 'Popup',
-            template: 'src/popup/template.html'
+            template: 'src/popup/template.html',
+            cache: false
         }),
         new HtmlWebpackPlugin({
             filename: 'sidebar.html',
@@ -83,7 +90,15 @@ module.exports = {
             ],
             title: 'sidebar',
             description: 'sidebar',
-            template: 'src/popup/template.html'
+            template: 'src/popup/template.html',
+            cache: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'background.html',
+            chunks: [
+                'background'
+            ],
+            cache: false
         })
     ]
 }

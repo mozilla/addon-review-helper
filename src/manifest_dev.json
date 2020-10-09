@@ -35,6 +35,7 @@
   "permissions": [
     "<all_urls>",
     "tabs"
-  ]
+  ],
 
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; "
 }

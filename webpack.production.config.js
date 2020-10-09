@@ -92,6 +92,13 @@ module.exports = {
             description: 'sidebar',
             template: 'src/popup/template.html',
             cache: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'background.html',
+            chunks: [
+                'background'
+            ],
+            cache: false
         })
     ]
 }

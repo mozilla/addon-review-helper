@@ -1,2 +1,3 @@
-console.log('Background.js file loaded');
+import store from './store';
 
+console.log('Background.js file loaded');
