@@ -8,3 +8,7 @@ export function sendToBackground(action, payload){
         'payload': payload
     });
 }
+
+export function checkIfMatches(expression, subject){
+    return expression.test(subject)
+}

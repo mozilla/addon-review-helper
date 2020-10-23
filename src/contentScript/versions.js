@@ -1,4 +1,18 @@
-export default function getVersions() {
+import { SET_VERSION } from "../redux/modules/currentAddon/types"
+import { sendToBackground } from "../utils/helpers";
+
+
+
+
+export function getLastVersion(){
+    let versions = getVersions();
+    let approvedVersions = versions.filter(version => version.status === "Approved");
+    let lastVersion = approvedVersions.pop();
+
+    sendToBackground(SET_VERSION, lastVersion.version)
+}
+
+export function getVersions() {
     let lastapproved_idx = null;
 
     let versions = Array.from(document.querySelectorAll(".review-files .listing-body, #review-files .listing-body")).map((listbody, idx) => {
@@ -8,15 +22,15 @@ export default function getVersions() {
         let hasConfirmApproval = false;
 
         let activities = Array.from(listbody.querySelectorAll(".activity tr")).reduce((results, activityrow) => {
-            console.log('activity row', activityrow)
             let state = activityrow.firstElementChild.textContent.trim();
-            console.log("state", state)
             let author = stateHasAuthor(state) ? activityrow.querySelector("td > div > a") : null;
-            console.log('author', author)
-
-            if (state == "Approved" && author && author.getAttribute("href").endsWith("mozilla/")) {
-                // This is an auto-approval, mark it for later.
-                hasAutoApproval = true;
+           
+            if (state == "Approved" && author) {
+                if (author.getAttribute("title").includes("Mozilla"))
+                    // This is an auto-approval, mark it for later.
+                    hasAutoApproval = true;
+                else
+                    hasConfirmApproval = true; // if it's not mozilla, then it's user so it's reviewed
             }
 
             if (state == "Auto-Approval confirmed") {
@@ -48,8 +62,6 @@ export default function getVersions() {
             }));
         }
 
-        let installanchor = listbody.querySelector(".editors-install");
-        let sourceanchor = listbody.querySelector("a[href^='/firefox/downloads/source']");
         let status = headerparts[3].trim().split(",")[0];
         let permissions = listbody.querySelector(".file-info div strong");
         if (permissions) {
@@ -65,9 +77,6 @@ export default function getVersions() {
             version: headerparts[1].trim(),
             date: submissiondate,
             status: status,
-
-            installurl: installanchor ? (new URL(installanchor.getAttribute("href"), location.href)).href : null,
-            sourceurl: sourceanchor ? (new URL(sourceanchor.getAttribute("href"), location.href)).href : null,
 
             activities: activities,
             permissions: permissions

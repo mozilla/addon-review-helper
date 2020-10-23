@@ -1,12 +1,19 @@
-import { getTitle } from "./getTitle";
-import getVersions  from "./getVersions";
+import getTitle  from "./title";
+import { getLastVersion } from "./versions";
+import { UPDATE_REDUX } from "../utils/constants";
 
 console.log('!!!!! Content scripts has loaded !!!!!');
 
-getTitle();
+browser.runtime.onMessage.addListener(handleMessages);
 
-let versions = getVersions();
-console.log('VERSIONS', versions)
-
-
-// store.dispatch(setTitle('CEVA TEST'))
+function handleMessages(message){
+    switch(message.type){
+        case UPDATE_REDUX: {
+            getTitle()
+            getLastVersion();
+            break;
+        }
+        default:
+            //do nothing
+    }
+}

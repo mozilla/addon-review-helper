@@ -14,8 +14,8 @@ import { sendToBackground } from "../../../utils/helpers";
 class Note extends React.Component {
 
     componentDidMount = () => {
-        // let title = document.querySelector('.addon')
-        // console.log('TITLE', title.innerText)
+        console.log('NOTES', this.props.notes)
+       
     }
 
     handleSaveNote = () => {
@@ -23,15 +23,16 @@ class Note extends React.Component {
         let note = {};
         const title = this.props.title;
         const content = this.props.currentNote;
+        const version = this.props.version;
+        let notes = this.props.notes ?? {};
 
-        note[title] = {
+        notes[title] = {
             addon: title,
-            version: '2.0.0',
+            version: version,
             content: content
         }
 
-        sendToBackground(SAVE_TO_STORAGE, note)
-        this.props.setCurrentNote(null)
+        sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
         this.props.createNote(false);
     }
 
@@ -40,6 +41,14 @@ class Note extends React.Component {
     }
 
     render() {
+
+        let noteDefaultValue = null;
+        if (this.props.notes && this.props.notes[this.props.title]) {
+            noteDefaultValue = this.props.notes[this.props.title].content;
+            this.props.setCurrentNote(noteDefaultValue);
+            console.log("FOUND", this.props.notes[this.props.title]);
+        }
+
         return (
             <div className="note-div">
                 <Box>
@@ -49,7 +58,7 @@ class Note extends React.Component {
                         aria-label="minimum height"
                         rowsMin={20}
                         onChange={this.handleNoteChange}
-                        defaultValue={this.props.currentNote}
+                        defaultValue={noteDefaultValue ?? this.props.version + "\n" + this.props.currentNote}
                     />
                 </Box>
                 <Button
@@ -73,6 +82,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => ({
     title: state.currentAddon.title,
-    currentNote: state.notes.currentNote
+    currentNote: state.notes.currentNote,
+    version: state.currentAddon.version,
+    notes: state.notes.notes
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Note);

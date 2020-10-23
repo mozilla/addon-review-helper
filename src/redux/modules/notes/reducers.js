@@ -1,8 +1,13 @@
-import { CREATE_NOTE, SET_CURRENT_NOTE } from "./types";
+import {
+    CREATE_NOTE,
+    SET_CURRENT_NOTE,
+    SET_NOTES
+} from "./types";
 
 const initialState = {
     createNote: false,
-    currentNote: ''
+    currentNote: '',
+    notes: []
 }
 
 export default (state = initialState, action) => {
@@ -16,6 +21,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 currentNote: action.payload.payload
+            }
+        case SET_NOTES:
+            return {
+                ...state,
+                notes: action.payload
             }
         default:
             return state
