@@ -26,7 +26,22 @@
 
   "content_scripts": [{
     "matches": [
-      "<all_urls>"
+      "https://reviewers.addons.mozilla.org/*/reviewers/review/*",
+      "https://reviewers.addons.mozilla.org/*/reviewers/review-listed/*",
+      "https://reviewers.addons.mozilla.org/*/reviewers/review-unlisted/*",
+      "https://reviewers.addons.mozilla.org/*/reviewers/review-content/*",
+      "https://reviewers.addons.allizom.org/*/reviewers/review/*",
+      "https://reviewers.addons.allizom.org/*/reviewers/review-listed/*",
+      "https://reviewers.addons.allizom.org/*/reviewers/review-unlisted/*",
+      "https://reviewers.addons.allizom.org/*/reviewers/review-content/*",
+      "https://reviewers.addons-dev.allizom.org/*/reviewers/review/*",
+      "https://reviewers.addons-dev.allizom.org/*/reviewers/review-listed/*",
+      "https://reviewers.addons-dev.allizom.org/*/reviewers/review-unlisted/*",
+      "https://reviewers.addons-dev.allizom.org/*/reviewers/review-content/*",
+      "https://reviewers.addons.thunderbird.net/*/reviewers/review/*",
+      "https://reviewers.addons.thunderbird.net/*/reviewers/review-listed/*",
+      "https://reviewers.addons.thunderbird.net/*/reviewers/review-unlisted/*",
+      "https://reviewers.addons.thunderbird.net/*/reviewers/review-content/*"
     ],
     "js": [
       "content.js"
@@ -34,7 +49,10 @@
   }],
   "permissions": [
     "<all_urls>",
-    "tabs"
+    "tabs",
+    "https://reviewers.addons.mozilla.org/*",
+    "https://reviewers.addons.allizom.org/*",
+    "storage"
   ]
 
 }

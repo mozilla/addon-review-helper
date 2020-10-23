@@ -1,4 +1,1 @@
-
-// NOTES
-
-export const CREATE_NOTE = "CREATE_NOTE";
+export const SAVE_TO_STORAGE = "SAVE_TO_STORAGE";

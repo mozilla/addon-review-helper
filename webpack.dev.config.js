@@ -5,6 +5,7 @@ const {
 } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 
 module.exports = {
@@ -28,6 +29,7 @@ module.exports = {
         }
     },
     watch: true,
+    devtool: 'source-map',
     module: {
         rules: [{
                 test: /\.(png|jpg)$/,
@@ -58,10 +60,11 @@ module.exports = {
         ]
     },
     plugins: [
+        new CleanTerminalPlugin(),
         new CopyWebpackPlugin({
             patterns: [{
                     from: './src/manifest_dev.json',
-                    to: ''
+                    to: 'manifest.json'
                 },
                 {
                     from: './src/img',

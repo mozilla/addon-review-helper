@@ -1,8 +1,10 @@
 import {createStore, applyMiddleware} from "redux";
 import {createBackgroundStore} from "redux-webext"
-import reducer from "../reducers";
+import reducer from ".";
 // import thunk from "redux-thunk";
 import logger from 'redux-logger'
+
+import aliases from "./aliases"
 
 const store = createStore(
     reducer,
@@ -10,5 +12,6 @@ const store = createStore(
 );
 
 export default createBackgroundStore({
-    store
+    store,
+    actions: aliases
 })
