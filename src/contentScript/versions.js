@@ -6,7 +6,7 @@ import { sendToBackground } from "../utils/helpers";
 
 export function getLastVersion(){
     let versions = getVersions();
-    let approvedVersions = versions.filter(version => version.status === "Approved");
+    let approvedVersions = versions.filter(version => version.status === "Approved" | version.status === "Awaiting Review");
     let lastVersion = approvedVersions.pop();
 
     sendToBackground(SET_VERSION, lastVersion.version)

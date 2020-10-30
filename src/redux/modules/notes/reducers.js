@@ -6,7 +6,7 @@ import {
 
 const initialState = {
     createNote: false,
-    currentNote: '',
+    currentNote: null,
     notes: []
 }
 

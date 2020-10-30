@@ -8,5 +8,7 @@ export default function () {
     
     // sending through message to background us no way to initiate store in content script found
     sendToBackground(SET_TITLE, title)
+
+    return title;
     
 }

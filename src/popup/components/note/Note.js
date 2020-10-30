@@ -15,7 +15,7 @@ class Note extends React.Component {
 
     componentDidMount = () => {
         console.log('NOTES', this.props.notes)
-       
+
     }
 
     handleSaveNote = () => {
@@ -37,18 +37,32 @@ class Note extends React.Component {
     }
 
     handleNoteChange = (event) => {
+        console.log('NOTE NOW', event.target.value)
         this.props.setCurrentNote(event.target.value)
     }
 
-    render() {
-
-        let noteDefaultValue = null;
-        if (this.props.notes && this.props.notes[this.props.title]) {
-            noteDefaultValue = this.props.notes[this.props.title].content;
-            this.props.setCurrentNote(noteDefaultValue);
-            console.log("FOUND", this.props.notes[this.props.title]);
+    textareaDefaultValue = () => {
+        /* 
+            check if currentNote exists
+            - yes: 
+                check if version number inside
+                    * yes -> just current note
+                    * no -> version + current note
+            - no -> version + new line
+        */
+        if (this.props.currentNote) {
+            if (this.props.currentNote.includes(this.props.version))
+                return this.props.currentNote;
+            else
+                return this.props.version + '\n' + this.props.currentNote;
+        } else {
+            return this.props.version + '\n';
         }
 
+    }
+
+    render() {
+        console.log("CURRENT NOTE", this.props.currentNote)
         return (
             <div className="note-div">
                 <Box>
@@ -58,7 +72,7 @@ class Note extends React.Component {
                         aria-label="minimum height"
                         rowsMin={20}
                         onChange={this.handleNoteChange}
-                        defaultValue={noteDefaultValue ?? this.props.version + "\n" + this.props.currentNote}
+                        defaultValue={this.textareaDefaultValue()}
                     />
                 </Box>
                 <Button
