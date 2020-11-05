@@ -12,6 +12,8 @@ import Button from "@material-ui/core/Button";
 import AddIcon from '@material-ui/icons/Add';
 import { connect } from "react-redux";
 import { createNote } from "../../../redux/modules/notes/actions";
+import { setSidebarType } from "../../../redux/modules/sidebar/actions";
+import { NOTES } from "../../../redux/modules/sidebar/types";
 
 
 class Menu extends React.Component {
@@ -28,15 +30,16 @@ class Menu extends React.Component {
         console.log('History review')
     }
 
-    openNotes() {
-        console.log('Notes')
+    openNotes = () => {
+        this.props.setSidebarType(NOTES);
+        browser.sidebarAction.open()
     }
 
     openHiddenAddons() {
         console.log('Hidden add-ons')
     }
 
-    
+
     handleCreateNote = () => {
         this.props.createNote(true);
     }
@@ -59,6 +62,7 @@ class Menu extends React.Component {
                     startIcon={<AddIcon />}
                     className="addNoteButton"
                     onClick={this.handleCreateNote}
+                    disabled={!this.props.canCreateNote}
                 >
                     Add note
                 </Button>
@@ -68,11 +72,13 @@ class Menu extends React.Component {
 }
 
 const mapDispatchToProps = {
-    createNote
+    createNote,
+    setSidebarType
 }
 
 const mapStateToProps = (state) => ({
-    createNoteState: state.notes.createNote
+    createNoteState: state.notes.createNote,
+    canCreateNote: state.notes.canCreateNote
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

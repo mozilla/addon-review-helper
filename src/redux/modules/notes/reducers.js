@@ -1,13 +1,15 @@
 import {
     CREATE_NOTE,
     SET_CURRENT_NOTE,
-    SET_NOTES
+    SET_NOTES,
+    CAN_CREATE_NOTE
 } from "./types";
 
 const initialState = {
     createNote: false,
     currentNote: null,
-    notes: []
+    canCreateNote: false,
+    notes: [],
 }
 
 export default (state = initialState, action) => {
@@ -25,7 +27,12 @@ export default (state = initialState, action) => {
         case SET_NOTES:
             return {
                 ...state,
-                notes: action.payload
+                notes: action.payload.payload
+            }
+        case CAN_CREATE_NOTE:
+            return {
+                ...state,
+                canCreateNote: action.payload
             }
         default:
             return state

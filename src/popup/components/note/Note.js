@@ -5,7 +5,7 @@ import Button from "@material-ui/core/Button";
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import "./Note.css"
 import { connect } from "react-redux";
-import { createNote, setCurrentNote } from "../../../redux/modules/notes/actions";
+import { createNote, setCurrentNote, setNotes } from "../../../redux/modules/notes/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
 
@@ -14,8 +14,7 @@ import { sendToBackground } from "../../../utils/helpers";
 class Note extends React.Component {
 
     componentDidMount = () => {
-        console.log('NOTES', this.props.notes)
-
+        //console.log('NOTES', this.props.notes)
     }
 
     handleSaveNote = () => {
@@ -33,23 +32,15 @@ class Note extends React.Component {
         }
 
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
+        this.props.setNotes(notes);
         this.props.createNote(false);
     }
 
     handleNoteChange = (event) => {
-        console.log('NOTE NOW', event.target.value)
         this.props.setCurrentNote(event.target.value)
     }
 
     textareaDefaultValue = () => {
-        /* 
-            check if currentNote exists
-            - yes: 
-                check if version number inside
-                    * yes -> just current note
-                    * no -> version + current note
-            - no -> version + new line
-        */
         if (this.props.currentNote) {
             if (this.props.currentNote.includes(this.props.version))
                 return this.props.currentNote;
@@ -62,7 +53,6 @@ class Note extends React.Component {
     }
 
     render() {
-        console.log("CURRENT NOTE", this.props.currentNote)
         return (
             <div className="note-div">
                 <Box>
@@ -80,6 +70,7 @@ class Note extends React.Component {
                     startIcon={<SaveOutlinedIcon />}
                     className="addNoteButton"
                     onClick={this.handleSaveNote}
+                    
                 >
                     Save note
                 </Button>
@@ -91,13 +82,14 @@ class Note extends React.Component {
 
 const mapDispatchToProps = {
     createNote,
-    setCurrentNote
+    setCurrentNote,
+    setNotes
 }
 
 const mapStateToProps = (state) => ({
     title: state.currentAddon.title,
     currentNote: state.notes.currentNote,
     version: state.currentAddon.version,
-    notes: state.notes.notes
+    notes: state.notes.notes,
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Note);

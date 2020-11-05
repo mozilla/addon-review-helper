@@ -16,6 +16,12 @@
     "default_icon": "img/logo-small.png"
   },
 
+  "sidebar_action": {
+    "default_icon": "img/logo-small.png",
+    "default_panel": "sidebar.html",
+    "open_at_install":false
+  },
+  
   "web_accessible_resources": [
     "sidebar.html"
   ],
