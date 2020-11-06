@@ -5,7 +5,8 @@ import Button from "@material-ui/core/Button";
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import "./Note.css"
 import { connect } from "react-redux";
-import { createNote, setCurrentNote, setNotes } from "../../../redux/modules/notes/actions";
+import { createNote, setCurrentNote } from "../../../redux/modules/notes/actions";
+import { setNotes, setTotalNotes } from "../../../redux/modules/sidebar/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
 
@@ -32,6 +33,7 @@ class Note extends React.Component {
         }
 
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
+        this.props.setTotalNotes(Object.keys(notes).length)
         this.props.setNotes(notes);
         this.props.createNote(false);
     }
@@ -83,13 +85,14 @@ class Note extends React.Component {
 const mapDispatchToProps = {
     createNote,
     setCurrentNote,
-    setNotes
+    setNotes,
+    setTotalNotes
 }
 
 const mapStateToProps = (state) => ({
     title: state.currentAddon.title,
     currentNote: state.notes.currentNote,
     version: state.currentAddon.version,
-    notes: state.notes.notes,
+    notes: state.sidebar.notes,
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Note);

@@ -10,7 +10,7 @@ import { setSidebarType, setSidebarContent } from "../../../redux/modules/sideba
 import { NOTES } from "../../../redux/modules/sidebar/types"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
-import { setNotes } from "../../../redux/modules/notes/actions";
+import { setNotes } from "../../../redux/modules/sidebar/actions";
 
 class Note extends React.Component {
 
@@ -76,7 +76,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state) => ({
     title: state.sidebar.title,
     content: state.sidebar.content,
-    notes: state.notes.notes
+    notes: state.sidebar.notes
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Note);

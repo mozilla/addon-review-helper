@@ -1,6 +1,5 @@
 import { CREATE_NOTE, 
     SET_CURRENT_NOTE,
-    SET_NOTES,
     CAN_CREATE_NOTE
 } from "./types" ;
 
@@ -18,12 +17,7 @@ export function setCurrentNote(payload) {
     }
 }
 
-export function setNotes(payload) {
-    return {
-        type: SET_NOTES,
-        payload
-    }
-}
+
 
 export function canCreateNote(payload) {
     return {

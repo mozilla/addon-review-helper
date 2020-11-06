@@ -1,8 +1,9 @@
 import store from '../redux/store';
 import { setTitle, setVersion } from "../redux/modules/currentAddon/actions";
 import { SET_TITLE, SET_VERSION } from "../redux/modules/currentAddon/types";
-import { setNotes, createNote, setCurrentNote, canCreateNote } from "../redux/modules/notes/actions";
+import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/notes/actions";
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
+import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
 
 import getTitle from "../contentScript/title";
 import getLastVersion from "../contentScript/versions";
@@ -55,6 +56,15 @@ function updateRedux(tabId, url) {
     let notes = browser.storage.local.get('notes');
     notes.then((res) => {
         console.log("NOTES IN STORAGE", res.notes)
+        if(res.notes){
+            store.dispatch(setTotalNotes({
+                payload: Object.keys(res.notes).length
+            }))
+        } else {
+            store.dispatch(setTotalNotes({
+                payload: 0
+            }))
+        }
         store.dispatch(setNotes({
             payload: res.notes
         }))
