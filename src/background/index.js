@@ -48,10 +48,10 @@ function onUpdatedHandler(tabId, changeInfo, tabInfo) {
 
 
 function updateRedux(tabId, url) {
-    console.log("create note", store.getState().notes.createNote)
     if (store.getState().notes.createNote)
         store.dispatch(createNote({ 'payload': false }))
-    store.dispatch(canCreateNote(checkIfMatches(REVIEW_URL_MATCHES, url)))
+    let isReview = checkIfMatches(REVIEW_URL_MATCHES, url);
+    store.dispatch(canCreateNote(isReview))
     let notes = browser.storage.local.get('notes');
     notes.then((res) => {
         console.log("NOTES IN STORAGE", res.notes)
@@ -62,7 +62,8 @@ function updateRedux(tabId, url) {
             tabId,
             {
                 type: UPDATE_REDUX,
-                notes: res.notes
+                notes: res.notes,
+                isReview
             }
         )
     });
