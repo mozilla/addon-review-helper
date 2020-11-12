@@ -5,7 +5,8 @@ import {
     LOAD_NEW_PAGE,
     LOAD_DATA,
     SET_TOTAL_NOTES, 
-    SET_NOTES
+    SET_NOTES,
+    SET_ORDER_BY
 } from "./types";
 
 export function setSidebarType(payload) {
@@ -52,6 +53,13 @@ export function setTotalNotes(payload) {
 export function setNotes(payload) {
     return {
         type: SET_NOTES,
+        payload
+    }
+}
+
+export function setOrderBy(payload) {
+    return {
+        type: SET_ORDER_BY,
         payload
     }
 }

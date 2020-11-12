@@ -19,13 +19,13 @@ class Note extends React.Component {
     }
 
     handleSaveButton = () => {
-        let note = {};
         const title = this.props.title;
         const content = this.props.content;
         let notes = this.props.notes ?? {};
 
         notes[title].addon = title;
         notes[title].content = content;
+        notes[title].date = Date.now();
 
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
         this.props.setNotes(notes);
@@ -52,7 +52,7 @@ class Note extends React.Component {
                         startIcon={<ArrowBackIcon />}
                         onClick={this.handleBackButton}
                         style={{ margin: "0 15px" }}
-                    >Default</Button>
+                    >Back</Button>
                     <Button color="secondary"
                         startIcon={<SaveOutlinedIcon />}
                         onClick={this.handleSaveButton}

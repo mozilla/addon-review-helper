@@ -1,3 +1,4 @@
+import _ from "lodash";
 import {
     SET_SIDEBAR_TYPE,
     SET_SIDEBAR_TITLE,
@@ -6,7 +7,12 @@ import {
     SET_TOTAL_NOTES,
     SET_NOTES,
     NOTES_PER_PAGE,
-    LOAD_NEW_PAGE
+    LOAD_NEW_PAGE,
+    SET_ORDER_BY,
+    DATE_DESC,
+    DATE_ASC,
+    TITLE_ASC,
+    TITLE_DESC
 } from "./types";
 
 const initialState = {
@@ -20,6 +26,7 @@ const initialState = {
     currentPage: 1,
     totalPages: 1,
     notes: [],
+    orderBy: DATE_DESC
 
 }
 
@@ -51,15 +58,11 @@ export default (state = initialState, action) => {
                 totalNotes: action.payload.payload
             }
         case LOAD_DATA:
-            let totalNotes = state.totalNotes
-            let notesPerPage = state.notesPerPage;
-            let totalPages = Math.ceil(totalNotes / notesPerPage);
-            let notes = state.notes;
-            let pageNotes = Object.keys(notes).slice(0, notesPerPage).reduce((result, key) => {
-                result[key] = notes[key];
-
-                return result;
-            }, {});
+            var totalNotes = state.totalNotes
+            var notesPerPage = state.notesPerPage;
+            var totalPages = Math.ceil(totalNotes / notesPerPage);
+            var notes = state.notes;
+            var pageNotes = loadNotes(notes, notesPerPage)
             return {
                 ...state,
                 pageNotes,
@@ -70,15 +73,15 @@ export default (state = initialState, action) => {
                 totalPages: totalPages
             }
         case LOAD_NEW_PAGE:
-            let newPage = action.payload.payload;
-            let addPages = state.currentPage - newPage;
+            var newPage = action.payload.payload;
+            var addPages = state.currentPage - newPage;
             // if next page -> -1
             // if previouse page -> +1
-            let perPage = state.notesPerPage;
+            var perPage = state.notesPerPage;
             notes = state.notes;
-            let upperCount;
-            let lowerCount;
-            let nextCurrentCount;
+            var upperCount;
+            var lowerCount;
+            var nextCurrentCount;
             switch (addPages) {
                 case -1: // next page
                     upperCount = state.currentCount + perPage;
@@ -110,7 +113,94 @@ export default (state = initialState, action) => {
                 currentPage: newPage,
                 pageNotes
             }
+        case SET_ORDER_BY:
+            switch (action.payload.payload) {
+                case DATE_ASC:
+                    var totalNotes = state.totalNotes
+                    var notesPerPage = state.notesPerPage;
+                    var totalPages = Math.ceil(totalNotes / notesPerPage);
+                    var notes = state.notes;
+                    var pageNotes = loadNotes(notes, notesPerPage)
+                    var ordered = _.orderBy(notes, [notes => new Date(notes.date)], "asc");
+                    pageNotes = loadNotes(ordered, notesPerPage)
+                    return {
+                        ...state,
+                        orderBy: DATE_ASC,
+                        pageNotes,
+                        currentCount: notesPerPage,
+                        notesPerPage,
+                        totalNotes,
+                        currentPage: 1,
+                        totalPages: totalPages
+                    }
+                case DATE_DESC:
+                    var totalNotes = state.totalNotes
+                    var notesPerPage = state.notesPerPage;
+                    var totalPages = Math.ceil(totalNotes / notesPerPage);
+                    var notes = state.notes;
+                    var pageNotes = loadNotes(notes, notesPerPage)
+                    var ordered = _.orderBy(notes, [notes => new Date(notes.date)], "desc");
+                    pageNotes = loadNotes(ordered, notesPerPage)
+                    return {
+                        ...state,
+                        orderBy: DATE_DESC,
+                        pageNotes,
+                        currentCount: notesPerPage,
+                        notesPerPage,
+                        totalNotes,
+                        currentPage: 1,
+                        totalPages: totalPages
+                    }
+                case TITLE_ASC:
+                    var totalNotes = state.totalNotes
+                    var notesPerPage = state.notesPerPage;
+                    var totalPages = Math.ceil(totalNotes / notesPerPage);
+                    var notes = state.notes;
+                    var pageNotes = loadNotes(notes, notesPerPage)
+                    var ordered = _.orderBy(notes, [notes => notes.addon.toLowerCase()], "asc");
+                    pageNotes = loadNotes(ordered, notesPerPage)
+                    return {
+                        ...state,
+                        orderBy: TITLE_ASC,
+                        pageNotes,
+                        currentCount: notesPerPage,
+                        notesPerPage,
+                        totalNotes,
+                        currentPage: 1,
+                        totalPages: totalPages
+                    }
+                case TITLE_DESC:
+                    var totalNotes = state.totalNotes
+                    var notesPerPage = state.notesPerPage;
+                    var totalPages = Math.ceil(totalNotes / notesPerPage);
+                    var notes = state.notes;
+                    var pageNotes = loadNotes(notes, notesPerPage)
+                    var ordered = _.orderBy(notes, [notes => notes.addon.toLowerCase()], "desc");
+                    var pageNotes = loadNotes(ordered, notesPerPage)
+                    return {
+                        ...state,
+                        orderBy: TITLE_DESC,
+                        pageNotes,
+                        currentCount: notesPerPage,
+                        notesPerPage,
+                        totalNotes,
+                        currentPage: 1,
+                        totalPages: totalPages
+                    }
+                default:
+                // do nothing
+            }
         default:
             return state;
     }
+}
+
+function loadNotes(notes, notesPerPage) {
+    let pageNotes = Object.keys(notes).slice(0, notesPerPage).reduce((result, key) => {
+        result[key] = notes[key];
+
+        return result;
+    }, {});
+
+    return pageNotes
 }

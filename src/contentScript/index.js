@@ -17,9 +17,13 @@ function handleMessages(message) {
                 title = getTitle();
                 getLastVersion();
             }
-            if (message.isReview && message.notes && message.notes[title]) {
+            if (message.isReview && message.notes) {
                 //DISPATCH SET CURRENT NOTE
-                sendToBackground(SET_CURRENT_NOTE, message.notes[title].content)
+                message.notes.forEach((note) => {
+                    if (note.addon === title) {
+                        sendToBackground(SET_CURRENT_NOTE, note.content)
+                    }
+                })
             } else {
                 sendToBackground(SET_CURRENT_NOTE, null)
             }
