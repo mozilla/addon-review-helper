@@ -16,3 +16,5 @@ export const DATE_DESC = "DATE_DESC";
 export const TITLE_ASC = "TITLE_ASC";
 export const TITLE_DESC = "TITLE_DESC";
 export const SET_ORDER_BY = "SET_ORDER_BY";
+export const SET_SEARCH_BY = "SET_SEARCH_BY";
+export const CLEAR = "CLEAR";

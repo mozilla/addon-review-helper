@@ -6,8 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { setSidebarType, setSidebarTitle, setSidebarContent, loadData, loadNewPage, setOrderBy } from "../../../redux/modules/sidebar/actions"
-import { NOTE, DATE_ASC, DATE_DESC, TITLE_ASC, TITLE_DESC } from "../../../redux/modules/sidebar/types"
+import { setSidebarType, setSidebarTitle, setSidebarContent, loadData, loadNewPage, setOrderBy, setSearchBy } from "../../../redux/modules/sidebar/actions"
+import { NOTE, DATE_ASC, DATE_DESC, TITLE_ASC, TITLE_DESC, CLEAR } from "../../../redux/modules/sidebar/types"
 import { setNotes } from "../../../redux/modules/sidebar/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
@@ -16,6 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
 import _ from "lodash";
 
 class Notes extends React.Component {
@@ -33,9 +34,9 @@ class Notes extends React.Component {
 
         let items = Object.keys(this.props.notes).map((data, i) => {
             return (
-                <div>
+                <div key={data + 1}>
                     <ListItem
-                        key={i}
+                        key={data}
                         onClick={this.handleListClick.bind(this, this.props.notes[data].addon, this.props.notes[data].content)}
                         style={{ cursor: "pointer" }}
                     >
@@ -67,8 +68,6 @@ class Notes extends React.Component {
     handleDeleteButton = (index) => {
         let notes = this.props.notes;
         delete notes[index];
-        console.log("NOTES",)
-        console.log("IS EMPTY", _.isEmpty(notes) )
         sendToBackground(SAVE_TO_STORAGE, { 'notes': _.isEmpty(notes) ? [] : notes })
         this.props.setNotes(_.isEmpty(notes) ? [] : notes);
         this.props.loadData();
@@ -78,10 +77,18 @@ class Notes extends React.Component {
         this.props.setOrderBy(event.target.value);
     }
 
+    handleSearchByChange = (event) =>{
+        if(event.target.value.length >= 3) {
+            this.props.setSearchBy(event.target.value)
+        } else if (event.target.value.length == 0 ){
+            this.props.setSearchBy(CLEAR)
+        }
+    }
+
     render() {
         return (
             <List>
-                <FormControl variant="outlined">
+                <FormControl variant="outlined" style={{ margin: "0 15px" }}>
                     <InputLabel id="demo-simple-select-outlined-label">OrderBy</InputLabel>
                     <Select
                         labelId="demo-simple-select-outlined-label"
@@ -96,6 +103,12 @@ class Notes extends React.Component {
                         <MenuItem value={TITLE_DESC}>Title Desc</MenuItem>
                     </Select>
                 </FormControl>
+                <TextField
+                    id="outlined-basic"
+                    label="Search"
+                    variant="outlined"
+                    onChange={this.handleSearchByChange}
+                />
                 {
                     this.setList()
                 }
@@ -112,7 +125,8 @@ const mapDispatchToProps = {
     setNotes,
     loadData,
     loadNewPage,
-    setOrderBy
+    setOrderBy,
+    setSearchBy
 }
 
 const mapStateToProps = (state) => ({

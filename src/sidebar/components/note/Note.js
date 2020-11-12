@@ -21,12 +21,19 @@ class Note extends React.Component {
     handleSaveButton = () => {
         const title = this.props.title;
         const content = this.props.content;
-        let notes = this.props.notes ?? {};
-
-        notes[title].addon = title;
-        notes[title].content = content;
-        notes[title].date = Date.now();
-
+        let notes = this.props.notes ?? [];
+        let index = _.findIndex(notes, function (note) { return note.addon == title });
+        if (index > -1) {
+            notes[index].title = title;
+            notes[index].content = content;
+            notes[index].date = Date.now();
+        } else {
+            notes.push({
+                addon: title,
+                content: content,
+                date: Date.now()
+            })
+        }
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
         this.props.setNotes(notes);
         this.props.setSidebarType(NOTES);

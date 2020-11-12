@@ -25,18 +25,12 @@ class Note extends React.Component {
         const content = this.props.currentNote;
         const version = this.props.version;
         let notes = this.props.notes ?? [];
-
-        console.log("notes before", this.props.notes)
-        console.log("notes after", notes)
         let index = _.findIndex(notes, function (note) { return note.addon == title });
-        console.log("INDEX", index)
         if (index > -1) {
             notes[index].title = title;
             notes[index].version = version;
             notes[index].content = content;
             notes[index].date = Date.now();
-
-
         } else {
             notes.push({
                 addon: title,
