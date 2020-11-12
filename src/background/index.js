@@ -1,9 +1,10 @@
 import store from '../redux/store';
 import { setTitle, setVersion } from "../redux/modules/currentAddon/actions";
-import { SET_TITLE, SET_VERSION } from "../redux/modules/currentAddon/types";
+import { SET_TITLE, SET_VERSION, SET_NOTE_EXISTS } from "../redux/modules/currentAddon/types";
 import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/notes/actions";
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
 import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
+import { setNoteExists } from "../redux/modules/currentAddon/actions";
 
 import getTitle from "../contentScript/title";
 import getLastVersion from "../contentScript/versions";
@@ -12,6 +13,7 @@ import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helper
 import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, REVIEW_URL_FILTERS, AMO_URL_FILTERS } from "../utils/constants";
 
 console.log('Background.js file loaded');
+
 
 browser.runtime.onMessage.addListener(handleMessages);
 
@@ -29,6 +31,17 @@ function handleMessages(message) {
         case SET_CURRENT_NOTE:
             store.dispatch(setCurrentNote({ payload: message.payload }))
             break;
+        case SET_NOTE_EXISTS:
+            if (message.payload) {
+                browser.browserAction.setBadgeText(
+                    { text: "Note" }// object
+                )
+            } else {
+                browser.browserAction.setBadgeText(
+                    { text: "" }// object
+                )
+            }
+            store.dispatch(setNoteExists(message.payload))
         default:
         //do nothing
     }
@@ -56,7 +69,7 @@ function updateRedux(tabId, url) {
     let notes = browser.storage.local.get('notes');
     notes.then((res) => {
         console.log("NOTES IN STORAGE", res.notes)
-        if(res.notes){
+        if (res.notes) {
             store.dispatch(setTotalNotes({
                 payload: Object.keys(res.notes).length
             }))

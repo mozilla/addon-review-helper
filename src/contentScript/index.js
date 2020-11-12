@@ -2,7 +2,8 @@ import getTitle from "./title";
 import { getLastVersion } from "./versions";
 import { UPDATE_REDUX } from "../utils/constants";
 import { sendToBackground } from "../utils/helpers";
-import { SET_CURRENT_NOTE } from "../redux/modules/notes/types";
+import { SET_CURRENT_NOTE, } from "../redux/modules/notes/types";
+import { SET_NOTE_EXISTS, } from "../redux/modules/currentAddon/types";
 
 console.log('!!!!! Content scripts has loaded !!!!!');
 
@@ -22,10 +23,12 @@ function handleMessages(message) {
                 message.notes.forEach((note) => {
                     if (note.addon === title) {
                         sendToBackground(SET_CURRENT_NOTE, note.content)
+                        sendToBackground(SET_NOTE_EXISTS, true)
                     }
                 })
             } else {
                 sendToBackground(SET_CURRENT_NOTE, null)
+                sendToBackground(SET_NOTE_EXISTS, false)
             }
             break;
         }

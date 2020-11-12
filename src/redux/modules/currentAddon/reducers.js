@@ -1,8 +1,13 @@
-import { SET_TITLE, SET_VERSION } from "./types";
+import {
+    SET_TITLE,
+    SET_VERSION,
+    SET_NOTE_EXISTS
+} from "./types";
 
 const initialState = {
     title: '',
-    version: ''
+    version: '',
+    noteExists: false
 }
 
 export default (state = initialState, action) => {
@@ -16,6 +21,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 version: action.payload
+            }
+        case SET_NOTE_EXISTS:
+            return {
+                ...state,
+                noteExists: action.payload
             }
         default:
             return state;
