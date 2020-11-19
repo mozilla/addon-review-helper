@@ -5,13 +5,11 @@ import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/note
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
 import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
 import { setNoteExists } from "../redux/modules/currentAddon/actions";
-
-import getTitle from "../contentScript/title";
-import getLastVersion from "../contentScript/versions";
-
 import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helpers";
 import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, REVIEW_URL_FILTERS, AMO_URL_FILTERS } from "../utils/constants";
-
+import { MENU } from "../redux/modules/popup/types"
+import { setMenuType } from "../redux/modules/popup/actions"
+import { setCategories } from "../redux/modules/categories/actions"
 console.log('Background.js file loaded');
 
 
@@ -62,8 +60,8 @@ function onUpdatedHandler(tabId, changeInfo, tabInfo) {
 
 
 function updateRedux(tabId, url) {
-    if (store.getState().notes.createNote)
-        store.dispatch(createNote({ 'payload': false }))
+    if (store.getState().popup.menuType !== MENU)
+        store.dispatch(setMenuType({ 'payload': MENU }))
     let isReview = checkIfMatches(REVIEW_URL_MATCHES, url);
     store.dispatch(canCreateNote(isReview))
     let notes = browser.storage.local.get('notes');
@@ -90,4 +88,11 @@ function updateRedux(tabId, url) {
             }
         )
     });
+    let categories = browser.storage.local.get('categories');
+    categories.then((res) => {
+        console.log("CATEGORIES: ", res.categories)
+        store.dispatch(setCategories({
+            payload: res.categories
+        }))
+    })
 }

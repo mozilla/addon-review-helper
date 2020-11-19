@@ -3,25 +3,31 @@ import "./Popup.css";
 
 import { connect } from "react-redux";
 
+import {MENU, NOTE, CATEGORIES} from "../redux/modules/popup/types";
 import Menu from "./components/menu/Menu";
 import Note from "./components/note/Note";
+import Categories from "./components/categories/Categories";
 
 class Popup extends Component {
 
     render() {
-        return (
-            <div className="popup">
-                {
-                    !this.props.createNoteState ?
-                        <Menu /> : <Note />
-                }
-            </div>
-        )
+        switch (this.props.menuType) {
+            case MENU:
+                return <Menu />
+            case NOTE:
+                return <Note />
+            case CATEGORIES:
+                return <Categories />
+            default:
+                break;
+        }
+       
     }
 }
 
 const mapStateToProps = (state) => ({
-    createNoteState: state.notes.createNote
+    createNoteState: state.notes.createNote,
+    menuType: state.popup.menuType
 })
 
 

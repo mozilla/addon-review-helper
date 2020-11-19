@@ -12,6 +12,8 @@ import Button from "@material-ui/core/Button";
 import AddIcon from '@material-ui/icons/Add';
 import { connect } from "react-redux";
 import { createNote } from "../../../redux/modules/notes/actions";
+import { setMenuType } from "../../../redux/modules/popup/actions";
+import { NOTE, CATEGORIES } from "../../../redux/modules/popup/types";
 import { setSidebarType } from "../../../redux/modules/sidebar/actions";
 import { NOTES } from "../../../redux/modules/sidebar/types";
 
@@ -22,8 +24,8 @@ class Menu extends React.Component {
         // openNewTab("https://example.org")
     }
 
-    openCategories() {
-        console.log('Categories')
+    openCategories = () => {
+        this.props.setMenuType(CATEGORIES)
     }
 
     openHistoryReview() {
@@ -41,7 +43,7 @@ class Menu extends React.Component {
 
 
     handleCreateNote = () => {
-        this.props.createNote(true);
+        this.props.setMenuType(NOTE);
     }
 
     render() {
@@ -73,7 +75,8 @@ class Menu extends React.Component {
 
 const mapDispatchToProps = {
     createNote,
-    setSidebarType
+    setSidebarType,
+    setMenuType
 }
 
 const mapStateToProps = (state) => ({

@@ -26,12 +26,10 @@ class Notes extends React.Component {
     }
 
     handlePageChange = (event, value) => {
-        console.log("VALUE", value)
         this.props.loadNewPage(value)
     }
 
     setList = () => {
-
         let items = Object.keys(this.props.notes).map((data, i) => {
             return (
                 <div key={data + 1}>
@@ -53,7 +51,6 @@ class Notes extends React.Component {
 
                 </div>
             )
-
         })
 
         return items;

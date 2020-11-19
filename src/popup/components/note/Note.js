@@ -7,6 +7,8 @@ import "./Note.css"
 import { connect } from "react-redux";
 import { createNote, setCurrentNote } from "../../../redux/modules/notes/actions";
 import { setNotes, setTotalNotes } from "../../../redux/modules/sidebar/actions";
+import { MENU } from "../../../redux/modules/popup/types"
+import { setMenuType } from "../../../redux/modules/popup/actions"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
 import _ from "lodash";
@@ -42,7 +44,7 @@ class Note extends React.Component {
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
         this.props.setTotalNotes(Object.keys(notes).length)
         this.props.setNotes(notes);
-        this.props.createNote(false);
+        this.props.setMenuType(MENU);
     }
 
     handleNoteChange = (event) => {
@@ -79,7 +81,6 @@ class Note extends React.Component {
                     startIcon={<SaveOutlinedIcon />}
                     className="addNoteButton"
                     onClick={this.handleSaveNote}
-
                 >
                     Save note
                 </Button>
@@ -93,7 +94,8 @@ const mapDispatchToProps = {
     createNote,
     setCurrentNote,
     setNotes,
-    setTotalNotes
+    setTotalNotes,
+    setMenuType
 }
 
 const mapStateToProps = (state) => ({

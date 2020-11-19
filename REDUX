@@ -1,4 +1,31 @@
+Categories
+    - categories (Array)
+    - currentCategory (String)
+    - editIndex (Integer)
+
+CurrentAddon
+    - title (string)
+    - version 
+    - noteExists (boolean)
+
+Notes
+    - createNote (boolean)
+    - currentNote (string)
+    - canCreateNote (boolean)
+
+Popup
+    - menuType (string)
+
 Sidebar
     - type
     - title
     - content
+    - pageNotes
+    - currentCount
+    - notesPerPage
+    - totalNotes
+    - currentPage
+    - totalPages
+    - notes
+    - orderBy
+    - searchBy
