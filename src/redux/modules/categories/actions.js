@@ -4,7 +4,9 @@ import {
     SET_EDIT_INDEX,
     SET_TOTAL_CATEGORIES,
     LOAD_CATEGORIES,
-    LOAD_NEW_PAGE_CATEGORIES
+    LOAD_NEW_PAGE_CATEGORIES,
+    SET_SELECTED_CATEGORIES,
+    SET_WITH_ADDONS
 } from "./types"
 
 export function setCategories(payload) {
@@ -44,6 +46,20 @@ export function loadCategories(payload) {
 export function loadNewPageC(payload) {
     return {
         type: LOAD_NEW_PAGE_CATEGORIES,
+        payload
+    }
+}
+
+export function setSelectedCategories(payload) {
+    return {
+        type: SET_SELECTED_CATEGORIES,
+        payload
+    }
+}
+
+export function setWithAddons(payload) {
+    return {
+        type: SET_WITH_ADDONS,
         payload
     }
 }

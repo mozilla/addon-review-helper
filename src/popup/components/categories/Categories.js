@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import "./Categories.css";
 import Grid from '@material-ui/core/Grid';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import { setCurrentCategory, setCategories, setEditIndex, setTotalCategories, loadCategories, loadNewPageC } from "../../../redux/modules/categories/actions"
+import { setCurrentCategory, setCategories, setEditIndex, setTotalCategories, loadCategories, loadNewPageC, setSelectedCategories } from "../../../redux/modules/categories/actions"
 import { setMenuType } from "../../../redux/modules/popup/actions"
 import { MENU } from "../../../redux/modules/popup/types"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -21,6 +21,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import _ from "lodash";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Pagination from '@material-ui/lab/Pagination';
+import CurrentAddon from "./CurrentAddon";
+
 
 class Categories extends React.Component {
 
@@ -105,7 +107,6 @@ class Categories extends React.Component {
                             onKeyDown={this.handleKeyPressed}
                         />
                     </Grid>
-
                     <Grid item xs={2}>
                         <Button
                             variant="contained"
@@ -119,6 +120,9 @@ class Categories extends React.Component {
                             {_.isNumber(this.props.editIndex) ? "Update" : "Save"}
                         </Button>
                     </Grid>
+
+                    {this.props.isReview ? <CurrentAddon /> : ''}
+
                     <Grid item xs={12}>
                         <TableContainer >
                             <Table aria-label="simple table">
@@ -165,7 +169,8 @@ const mapDispatchToProps = {
     setEditIndex,
     setTotalCategories,
     loadCategories,
-    loadNewPageC
+    loadNewPageC,
+    setSelectedCategories
 }
 
 const mapStateToProps = (state) => ({
@@ -174,6 +179,10 @@ const mapStateToProps = (state) => ({
     editIndex: state.categories.editIndex,
     totalPages: state.categories.totalPages,
     currentPage: state.categories.currentPage,
+    allCategories: state.categories.categories,
+    selectedCategories: state.categories.selectedCategories,
+    withAddons: state.categories.withAddons,
+    isReview: state.notes.canCreateNote
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories);

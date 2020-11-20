@@ -1,9 +1,10 @@
 import getTitle from "./title";
 import { getLastVersion } from "./versions";
-import { UPDATE_REDUX } from "../utils/constants";
+import { UPDATE_REDUX, CHECK_WITH_ADDONS } from "../utils/constants";
 import { sendToBackground } from "../utils/helpers";
 import { SET_CURRENT_NOTE, } from "../redux/modules/notes/types";
-import { SET_NOTE_EXISTS, } from "../redux/modules/currentAddon/types";
+import { SET_NOTE_EXISTS } from "../redux/modules/currentAddon/types";
+import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types"
 
 console.log('!!!!! Content scripts has loaded !!!!!');
 
@@ -13,8 +14,8 @@ function handleMessages(message) {
     switch (message.type) {
         case UPDATE_REDUX: {
             console.log("NOTES IN CONTENT SCRIPT", message.notes)
-            let title = null;
             if (message.isReview) {
+                let title = null;
                 title = getTitle();
                 getLastVersion();
             }
@@ -32,6 +33,14 @@ function handleMessages(message) {
             }
             break;
         }
+        case CHECK_WITH_ADDONS:
+            let withAddons = message.withAddons;
+            let selectedCategories = [];
+            Object.keys(withAddons).forEach(category => {
+                if (withAddons[category].indexOf(getTitle()) > -1)
+                    selectedCategories.push(category)
+            })
+            sendToBackground(SET_SELECTED_CATEGORIES, selectedCategories)
         default:
         //do nothing
     }

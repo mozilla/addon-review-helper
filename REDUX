@@ -2,6 +2,8 @@ Categories
     - categories (Array)
     - currentCategory (String)
     - editIndex (Integer)
+    - selectedCategories (Array)
+    - withAddons (Array)
 
 CurrentAddon
     - title (string)

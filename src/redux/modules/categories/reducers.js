@@ -5,7 +5,9 @@ import {
     CATEGORIES_PER_PAGE,
     SET_TOTAL_CATEGORIES,
     LOAD_CATEGORIES,
-    LOAD_NEW_PAGE_CATEGORIES
+    LOAD_NEW_PAGE_CATEGORIES,
+    SET_SELECTED_CATEGORIES,
+    SET_WITH_ADDONS
 } from "./types"
 
 const initialState = {
@@ -17,7 +19,9 @@ const initialState = {
     categoriesPerPage: CATEGORIES_PER_PAGE,
     totalCategories: null,
     currentPage: 1,
-    totalPages: 1
+    totalPages: 1,
+    selectedCategories: [],
+    withAddons: null
 }
 
 export default (state = initialState, action) => {
@@ -87,6 +91,16 @@ export default (state = initialState, action) => {
                 pageCategories,
                 currentPage: newPage,
                 currentCount: nextCurrentCount
+            }
+        case SET_SELECTED_CATEGORIES:
+            return {
+                ...state,
+                selectedCategories: action.payload.payload
+            }
+        case SET_WITH_ADDONS:
+            return {
+                ...state,
+                withAddons: action.payload.payload
             }
         default:
             return state
