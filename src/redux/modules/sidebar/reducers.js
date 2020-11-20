@@ -69,7 +69,7 @@ export default (state = initialState, action) => {
             var perPage = state.notesPerPage;
             let notes = state.notes;
             let ordered = orderNotes(notes, state.orderBy);
-            if(state.searchBy && state.searchBy != CLEAR){
+            if (state.searchBy && state.searchBy != CLEAR) {
                 ordered = searchNotes(ordered, state.searchBy);
             }
             var upperCount;
@@ -89,10 +89,12 @@ export default (state = initialState, action) => {
                     nextCurrentCount = lowerCount;
                     pageNotes = loadNotes(ordered, lowerCount - perPage, upperCount - perPage)
                     break;
+
                 default:
+                    nextCurrentCount = state.currentCount;
+                    pageNotes = state.pageNotes
                 //
             }
-
             return {
                 ...state,
                 currentCount: nextCurrentCount,
@@ -126,13 +128,11 @@ function loadOrderedAndSearchedNotes(state, orderBy, searchBy = null) {
     var notes = state.notes;
     let changedNotes = orderNotes(notes, orderBy)
     let searchTerm = searchBy ?? state.searchBy;
-    if(searchTerm && searchTerm != CLEAR){
+    if (searchTerm && searchTerm !== CLEAR) {
         changedNotes = searchNotes(changedNotes, searchTerm)
     }
     let pageNotes = loadNotes(changedNotes, 0, notesPerPage);
     var totalPages = Math.ceil(changedNotes.length / notesPerPage);
-
-
 
     return {
         ...state,
@@ -168,7 +168,7 @@ function orderNotes(notes, orderBy) {
     return ordered;
 }
 
-function loadNotes(notes, lowerCount, upperCount,) {
+function loadNotes(notes, lowerCount, upperCount) {
     // let pageNotes = Object.keys(notes).slice(0, notesPerPage).reduce((result, key) => {
     let pageNotes = Object.keys(notes).slice(lowerCount, upperCount).reduce((result, key) => {
         result[key] = notes[key];
@@ -178,9 +178,9 @@ function loadNotes(notes, lowerCount, upperCount,) {
     return pageNotes
 }
 
-function searchNotes(notes, searchBy){
+function searchNotes(notes, searchBy) {
     searchBy = searchBy.toLowerCase();
-    let searched =  _.filter(notes, function (note) {
+    let searched = _.filter(notes, function (note) {
         return note.addon.toLowerCase().includes(searchBy) || note.content.toLowerCase().includes(searchBy)
     })
 

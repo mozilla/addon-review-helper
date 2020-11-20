@@ -9,7 +9,7 @@ export const NOTE = "NOTE";
 export const LOAD_NEW_PAGE = "LOAD_NEW_PAGE";
 export const LOAD_DATA = "LOAD_DATA";
 export const SET_TOTAL_NOTES = "SET_TOTAL_NOTES";
-export const NOTES_PER_PAGE = 10;
+export const NOTES_PER_PAGE = 2;
 
 export const DATE_ASC = "DATE_ASC";
 export const DATE_DESC = "DATE_DESC";

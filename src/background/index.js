@@ -9,7 +9,7 @@ import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helper
 import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, REVIEW_URL_FILTERS, AMO_URL_FILTERS } from "../utils/constants";
 import { MENU } from "../redux/modules/popup/types"
 import { setMenuType } from "../redux/modules/popup/actions"
-import { setCategories } from "../redux/modules/categories/actions"
+import { setCategories, setTotalCategories } from "../redux/modules/categories/actions"
 console.log('Background.js file loaded');
 
 
@@ -90,9 +90,19 @@ function updateRedux(tabId, url) {
     });
     let categories = browser.storage.local.get('categories');
     categories.then((res) => {
-        console.log("CATEGORIES: ", res.categories)
-        store.dispatch(setCategories({
-            payload: res.categories
-        }))
+        console.log("CATEGORIES: ", JSON.parse(res.categories))
+        if (res.categories) {
+            store.dispatch(setCategories({
+                payload: JSON.parse(res.categories)
+            }))
+            store.dispatch(setTotalCategories({
+                payload: JSON.parse(res.categories).length
+            }))
+        } else {
+            store.dispatch(setTotalCategories({
+                payload: 0
+            }))
+        }
     })
 }
+
