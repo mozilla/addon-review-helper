@@ -12,31 +12,29 @@ import { sendToBackground } from '../../../utils/helpers';
 import { setNotes } from '../../../redux/modules/sidebar/actions';
 
 const Note = ({title, content, notes, setNotes, setSidebarType, setSidebarContent}) => {
-    console.log('addontitle', title);
     const handleBackButton = () => setSidebarType(NOTES);
 
     const handleSaveButton = () => {
-        let index = _.findIndex(notes ?? [], note => note.addon == title);
+        let notesAdded = notes ?? [];
+        let index = notesAdded.findIndex(note => note.addon === title);
         if (index > -1) {
-            notes[index].title = title;
-            notes[index].content = content;
-            notes[index].date = Date.now();
+            notesAdded[index].title = title;
+            notesAdded[index].content = content;
+            notesAdded[index].date = Date.now();
         } else {
-            notes.push({
+            notesAdded.push({
                 addon: title,
                 content: content,
                 date: Date.now()
             })
         }
-        sendToBackground(SAVE_TO_STORAGE, { notes })
-        setNotes(notes);
+        sendToBackground(SAVE_TO_STORAGE, { 'notes': notesAdded })
+        setNotes(notesAdded);
         setSidebarType(NOTES);
     }
 
-    const handleContentChange = event => {
-        setSidebarContent(event.target.value);
-    }
-   
+    const handleContentChange = event => setSidebarContent(event.target.value);
+       
     return (
         <Box>
             <TitleContainer>{title}</TitleContainer>
