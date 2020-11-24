@@ -1,9 +1,8 @@
 import React from 'react';
-import './Note.css';
-import { connect } from 'react-redux';
+
+import {TitleContainer, ButtonSave, ButtonBack, TextareaContainer} from './Note.styled';
 import Box from '@material-ui/core/Box';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { setSidebarType, setSidebarContent } from '../../../redux/modules/sidebar/actions';
@@ -13,6 +12,7 @@ import { sendToBackground } from '../../../utils/helpers';
 import { setNotes } from '../../../redux/modules/sidebar/actions';
 
 const Note = ({title, content, notes, setNotes, setSidebarType, setSidebarContent}) => {
+    console.log('addontitle', title);
     const handleBackButton = () => setSidebarType(NOTES);
 
     const handleSaveButton = () => {
@@ -38,31 +38,25 @@ const Note = ({title, content, notes, setNotes, setSidebarType, setSidebarConten
     }
    
     return (
-        <div>
-            <Box>
-                <h4>{title}</h4>
-                <TextareaAutosize
-                    className='note-textarea'
-                    aria-label="minimum height"
-                    rowsMin={20}
-                    onChange={handleContentChange}
-                    defaultValue={content}
-                />
-                <Button
-                    startIcon={<ArrowBackIcon />}
-                    onClick={handleBackButton}
-                    style={{ margin: "0 15px" }}
-                >Back</Button>
-                <Button color="secondary"
-                    startIcon={<SaveOutlinedIcon />}
-                    onClick={handleSaveButton}
-                    className="secondary-button"
-                >Save Note
-                </Button>
-            </Box>
-        </div>
+        <Box>
+            <TitleContainer>{title}</TitleContainer>
+            <TextareaContainer
+                aria-label="minimum height"
+                rowsMin={20}
+                onChange={handleContentChange}
+                defaultValue={content}
+            />
+            <ButtonBack
+                startIcon={<ArrowBackIcon />}
+                onClick={handleBackButton}
+            >Back</ButtonBack>
+            <ButtonSave color="secondary"
+                startIcon={<SaveOutlinedIcon />}
+                onClick={handleSaveButton}
+            >Save Note
+            </ButtonSave>
+        </Box>
     )
-  
 }
 
 const mapDispatchToProps = {
