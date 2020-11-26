@@ -41,13 +41,13 @@ function handleMessages(message) {
             break;
         }
         case CHECK_WITH_ADDONS:
-            let withAddons = message.withAddons;
-            let selectedCategories = [];
-            Object.keys(withAddons).forEach(category => {
-                if (withAddons[category].indexOf(getTitle()) > -1)
-                    selectedCategories.push(category)
-            })
-            sendToBackground(SET_SELECTED_CATEGORIES, selectedCategories)
+            // let withAddons = message.withAddons;
+            // let selectedCategories = [];
+            // Object.keys(withAddons).forEach(category => {
+            //     if (withAddons[category].indexOf(getTitle()) > -1)
+            //         selectedCategories.push(category)
+            // })
+            // sendToBackground(SET_SELECTED_CATEGORIES, selectedCategories)
         default:
         //do nothing
     }

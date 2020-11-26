@@ -22,12 +22,21 @@ import _ from "lodash";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Pagination from '@material-ui/lab/Pagination';
 import CurrentAddon from "./CurrentAddon";
-
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import { setSidebarType, setSelectedCategory } from "../../../redux/modules/sidebar/actions";
+import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
 
 class Categories extends React.Component {
 
     componentDidMount = () => {
         this.props.loadCategories()
+        console.log("withAddons", this.props.withAddons)
+        let selectedCategories = [];
+        Object.keys(this.props.withAddons).forEach(category => {
+            if (this.props.withAddons[category].indexOf(this.props.title) > -1)
+                selectedCategories.push(category)
+        })
+        this.props.setSelectedCategories(selectedCategories)
     }
 
     handleCategoryChange = (event) => {
@@ -72,7 +81,6 @@ class Categories extends React.Component {
     }
 
     handlePageChange = (event, value) => {
-        console.log("PAGE", value)
         this.props.loadNewPageC(value)
     }
 
@@ -80,6 +88,12 @@ class Categories extends React.Component {
         if (e.keyCode === 13) {
             this.handleSaveCategory();
         }
+    }
+
+    handleList = (index) => {
+        this.props.setSelectedCategory(this.props.categories[index])
+        this.props.setSidebarType(CATEGORY_ADDONS);
+        browser.sidebarAction.open()
     }
 
     render() {
@@ -142,6 +156,14 @@ class Categories extends React.Component {
                                                     onClick={this.handleDelete.bind(this, i)}
                                                 >
                                                     Delete</Button>
+                                                {
+                                                    this.props.categories[i] in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
+                                                        onClick={this.handleList.bind(this, i)}
+                                                    >
+                                                        View add-ons
+                                                        </Button>
+                                                }
+
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
                                                     onClick={this.handleEdit.bind(this, i)}
                                                 >
@@ -169,7 +191,9 @@ const mapDispatchToProps = {
     setTotalCategories,
     loadCategories,
     loadNewPageC,
-    setSelectedCategories
+    setSelectedCategories,
+    setSidebarType,
+    setSelectedCategory
 }
 
 const mapStateToProps = (state) => ({
@@ -181,7 +205,8 @@ const mapStateToProps = (state) => ({
     allCategories: state.categories.categories,
     selectedCategories: state.categories.selectedCategories,
     withAddons: state.categories.withAddons,
-    isReview: state.notes.canCreateNote
+    isReview: state.notes.canCreateNote,
+    title: state.currentAddon.title
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories);
