@@ -85,7 +85,6 @@ export default (state = initialState, action) => {
 
                 // do nothing
             }
-            console.log(state.categories, lowerCount, upperCount)
             return {
                 ...state,
                 pageCategories,

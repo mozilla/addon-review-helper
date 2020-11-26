@@ -11,12 +11,54 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { setWithAddons } from "../../../redux/modules/categories/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
 import { sendToBackground } from "../../../utils/helpers";
+import Pagination from '@material-ui/lab/Pagination';
+import { loadPage, loadItems } from "../../../utils/helpers";
 
 class CategoryAddons extends React.Component {
 
+    constructor() {
+        super();
+        const perPage = 18
+        this.state = {
+            pageAddons: [],
+            perPage,
+            currentCount: perPage,
+            totalAddons: null,
+            currentPage: 1,
+            totalPages: 1
+        }
+    }
+
+    componentDidMount = () => {
+        let addons = this.props.withAddons[this.props.selectedCategory];
+        let totalAddons = addons.length;
+        let pageAddons = loadItems(addons, 0, this.state.perPage);
+        let totalPages = Math.ceil(totalAddons / this.state.perPage);
+
+        this.setState({
+            pageAddons,
+            totalAddons,
+            totalPages
+        })
+    }
+
+    handlePageChange = (event, page) => {
+        let results = loadPage(
+            this.props.withAddons[this.props.selectedCategory],
+            page,
+            this.state.perPage,
+            this.state.pageAddons
+        )
+
+         this.setState({
+            pageAddons: results.pageItems,
+            currentPage: results.currentPage,
+            currentCount: results.currentCount
+        })
+    }
+
     setList = () => {
-        let items = this.props.withAddons[this.props.selectedCategory].map((addon, i) => {
-            console.log("addon", addon)
+        let items = this.state.pageAddons && this.state.pageAddons.map((addon, i) => {
             return (
                 <ListItem key={i}>
                     <ListItemText primary={addon} ></ListItemText>
@@ -25,7 +67,6 @@ class CategoryAddons extends React.Component {
                             <DeleteIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
-
                 </ListItem>
             )
         });
@@ -38,7 +79,6 @@ class CategoryAddons extends React.Component {
         withAddons[this.props.selectedCategory].splice(index, 1);
         this.props.setWithAddons(withAddons);
         sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
-
     }
 
     render() {
@@ -52,6 +92,7 @@ class CategoryAddons extends React.Component {
                         <List>
                             {this.setList()}
                         </List>
+                        <Pagination count={this.state.totalPages} page={this.state.currentPage} onChange={this.handlePageChange} />
                     </Grid>
                 </Grid>
             </div>
