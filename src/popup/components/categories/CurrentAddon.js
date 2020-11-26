@@ -14,6 +14,7 @@ import { setWithAddons, setSelectedCategories } from '../../../redux/modules/cat
 import Grid from '@material-ui/core/Grid';
 import { sendToBackground } from "../../../utils/helpers";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
+import _ from "lodash";
 
 
 class CurrentAddon extends React.Component {
@@ -21,67 +22,82 @@ class CurrentAddon extends React.Component {
     handleSelectChange = (event) => {
         // for each selected category
         // add the title of the add-on
-        let withAddons = this.props.withAddons ?? [];
+        let withAddons = this.props.withAddons ?? {};
+        let previousSelected = this.props.selectedCategories;
         let selectedCategories = event.target.value;
-        console.log("withAddons: ", withAddons)
+        let diff = _.difference(previousSelected, selectedCategories);
+
+        let addAddons;
         selectedCategories.forEach(category => {
-            console.log("category", withAddons[category])
-            if (!withAddons[category]) {
-                withAddons[category] = []
-                withAddons[category].push(this.props.title)
-            } else if(withAddons[category].indexOf(this.props.title) < 0) {
-                withAddons[category].push(this.props.title)
+            if (!withAddons[category]) { // category does not exists in addon
+                addAddons = [this.props.title];
+            } else if (withAddons[category].indexOf(this.props.title) < 0) { // category exists but does not have addon
+                addAddons = withAddons[category];
+                addAddons.push(this.props.title);
+            } else { //category exists and has addon => remains the same
+                addAddons = withAddons[category];
             }
+            withAddons[category] = addAddons
         });
 
-        console.log("withAddons", withAddons)
+
+        diff.length > 0 && diff.forEach(category => {
+            addAddons = withAddons[category];
+            addAddons.splice(addAddons.indexOf(this.props.title), 1)
+            if (addAddons.length > 0)
+                withAddons[category] = addAddons;
+            else
+                delete withAddons[category]
+        })
+
         this.props.setSelectedCategories(selectedCategories);
         this.props.setWithAddons(withAddons);
-        sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons});
+        sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
     }
 
     render() {
         return (
-        <Grid item xs={12}>
-            <Card >
-                <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
-                        Add categories to {this.props.title}
-                </Typography>
-                    {
-                        this.props.allCategories ?
-                            <FormControl style={{ width: '100%' }}>
-                                <InputLabel id="demo-mutiple-checkbox-label">Categories</InputLabel>
-                                <Select
-                                    labelId="demo-mutiple-checkbox-label"
-                                    id="demo-mutiple-checkbox"
-                                    multiple
-                                    value={this.props.selectedCategories}
-                                    onChange={this.handleSelectChange}
-                                    input={<Input />}
-                                    renderValue={(selected) => selected.join(', ')}
-                                    style={{ width: '100%' }}
-                                >
-                                    {this.props.allCategories.map((category) => (
-                                        <MenuItem key={category} value={category} style={{ width: '100%' }} >
-                                            <Checkbox
-                                                checked={this.props.selectedCategories.indexOf(category) > -1}
-                                            />
-                                            <ListItemText primary={category} />
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            : ''
+            <Grid item xs={12}>
+                <Card >
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Add categories to {this.props.title}
+                        </Typography>
+                        {
+                            this.props.allCategories ?
+                                <FormControl style={{ width: '100%' }}>
+                                    <InputLabel id="demo-mutiple-checkbox-label">Categories</InputLabel>
+                                    <Select
+                                        labelId="demo-mutiple-checkbox-label"
+                                        id="demo-mutiple-checkbox"
+                                        multiple
+                                        value={this.props.selectedCategories}
+                                        onChange={this.handleSelectChange}
+                                        input={<Input />}
+                                        renderValue={(selected) => selected.join(', ')}
+                                        style={{ width: '100%' }}
+                                    >
+                                        {this.props.allCategories.map((category) => (
+                                            <MenuItem key={category} value={category} style={{ width: '100%' }} >
+                                                <Checkbox
+                                                    checked={this.props.selectedCategories.indexOf(category) > -1}
+                                                />
+                                                <ListItemText primary={category} />
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                : ''
 
-                    }
-                </CardContent>
-            </Card>
+                        }
+                    </CardContent>
+                </Card>
 
 
-        </Grid>
+            </Grid>
 
-        )}
+        )
+    }
 }
 
 const mapDispatchToProps = {
