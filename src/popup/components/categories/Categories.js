@@ -36,7 +36,6 @@ class Categories extends React.Component {
 
     handleSaveCategory = () => {
         if (this.props.currentCategory.length > 0) {
-            console.log("Categories:", this.props.categories)
             var categories = this.props.categories ?? [];
 
             if (_.isNumber(this.props.editIndex)) {
