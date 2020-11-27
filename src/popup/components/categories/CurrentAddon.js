@@ -37,7 +37,7 @@ class CurrentAddon extends React.Component {
             } else { //category exists and has addon => remains the same
                 addAddons = withAddons[category];
             }
-            addAddons = addAddons.sort((a,b)  => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+            addAddons = addAddons.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
             withAddons[category] = addAddons
         });
 

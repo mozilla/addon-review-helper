@@ -30,12 +30,15 @@ class Categories extends React.Component {
 
     componentDidMount = () => {
         this.props.loadCategories()
-        let selectedCategories = [];
-        Object.keys(this.props.withAddons).forEach(category => {
-            if (this.props.withAddons[category].indexOf(this.props.title) > -1)
-                selectedCategories.push(category)
-        })
-        this.props.setSelectedCategories(selectedCategories)
+        if (this.props.withAddons) {
+            let selectedCategories = [];
+            Object.keys(this.props.withAddons).forEach(category => {
+                if (this.props.withAddons[category].indexOf(this.props.title) > -1)
+                    selectedCategories.push(category)
+            })
+            this.props.setSelectedCategories(selectedCategories)
+        }
+
     }
 
     handleCategoryChange = (event) => {
@@ -145,26 +148,26 @@ class Categories extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {this.props.categories && Object.keys(this.props.categories).map((i, category) => (
-                                        <TableRow key={i}>
+                                    {this.props.categories && this.props.categories.map((category, index) => (
+                                        <TableRow key={index}>
                                             <TableCell component="th" scope="row">
-                                                {this.props.categories[i]}
+                                                {category}
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Button variant="contained" style={{ marginRight: "10px" }} startIcon={<DeleteForeverOutlinedIcon />}
-                                                    onClick={this.handleDelete.bind(this, i)}
+                                                    onClick={this.handleDelete.bind(this, index)}
                                                 >
                                                     Delete</Button>
                                                 {
-                                                    this.props.categories[i] in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
-                                                        onClick={this.handleList.bind(this, i)}
+                                                    this.props.withAddons && category in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
+                                                        onClick={this.handleList.bind(this, index)}
                                                     >
                                                         View add-ons
                                                         </Button>
                                                 }
 
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
-                                                    onClick={this.handleEdit.bind(this, i)}
+                                                    onClick={this.handleEdit.bind(this, index)}
                                                 >
                                                     Edit
                                                 </Button>

@@ -50,7 +50,7 @@ class CategoryAddons extends React.Component {
             this.state.pageAddons
         )
 
-         this.setState({
+        this.setState({
             pageAddons: results.pageItems,
             currentPage: results.currentPage,
             currentCount: results.currentCount
@@ -63,7 +63,7 @@ class CategoryAddons extends React.Component {
                 <ListItem key={i}>
                     <ListItemText primary={addon} ></ListItemText>
                     <ListItemSecondaryAction>
-                        <IconButton edge="end" aria-label="delete" onClick={this.handleDeleteButton.bind(this, i)}>
+                        <IconButton edge="end" aria-label="delete" onClick={this.handleDeleteButton.bind(this, addon, i)}>
                             <DeleteIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
@@ -74,9 +74,17 @@ class CategoryAddons extends React.Component {
         return items;
     }
 
-    handleDeleteButton = (index) => {
+    handleDeleteButton = (addon, index) => {
         let withAddons = this.props.withAddons;
-        withAddons[this.props.selectedCategory].splice(index, 1);
+        let pageAddons = this.state.pageAddons;
+        let categoryAddons = withAddons[this.props.selectedCategory];
+        withAddons[this.props.selectedCategory].splice(categoryAddons.indexOf(addon), 1);
+        pageAddons.splice(index, 1);
+        if (withAddons[this.props.selectedCategory].length === 0)
+            delete withAddons[this.props.selectedCategory];
+        this.setState({
+            pageAddons
+        })
         this.props.setWithAddons(withAddons);
         sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
     }
