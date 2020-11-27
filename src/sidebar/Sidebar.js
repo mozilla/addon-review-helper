@@ -5,8 +5,10 @@ import Notes from "./components/notes/Notes";
 import Note from "./components/note/Note"
 import {
     NOTES,
-    NOTE
+    NOTE,
+    CATEGORY_ADDONS
 } from "../redux/modules/sidebar/types"
+import CategoryAddons from "./components/categoryAddons/CategoryAddons"
 
 class Sidebar extends React.Component {
     render() {
@@ -15,6 +17,8 @@ class Sidebar extends React.Component {
                 return <Notes />
             case NOTE:
                 return <Note />
+            case CATEGORY_ADDONS:
+                return <CategoryAddons />
             default:
                 break;
         }

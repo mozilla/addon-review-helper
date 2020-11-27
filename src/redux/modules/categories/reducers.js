@@ -11,7 +11,7 @@ import {
 } from "./types"
 
 const initialState = {
-    categories: null,
+    categories: [],
     currentCategory: '',
     editIndex: null,
     pageCategories: null,
@@ -85,7 +85,6 @@ export default (state = initialState, action) => {
 
                 // do nothing
             }
-            console.log(state.categories, lowerCount, upperCount)
             return {
                 ...state,
                 pageCategories,

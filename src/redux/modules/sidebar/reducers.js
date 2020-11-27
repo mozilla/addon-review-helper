@@ -14,7 +14,8 @@ import {
     TITLE_ASC,
     TITLE_DESC,
     SET_SEARCH_BY,
-    CLEAR
+    CLEAR,
+    SET_SELECTED_CATEGORY
 } from "./types";
 
 const initialState = {
@@ -29,7 +30,8 @@ const initialState = {
     totalPages: 1,
     notes: [],
     orderBy: DATE_DESC,
-    searchBy: null
+    searchBy: null,
+    selectedCategory: null
 }
 
 export default (state = initialState, action) => {
@@ -116,7 +118,12 @@ export default (state = initialState, action) => {
             }
             break;
         case SET_SEARCH_BY:
-            return loadOrderedAndSearchedNotes(state, state.orderBy, action.payload.payload)
+            return loadOrderedAndSearchedNotes(state, state.orderBy, action.payload.payload);
+        case SET_SELECTED_CATEGORY:
+            return {
+                ...state,
+                selectedCategory: action.payload.payload
+            }
         default:
             return state;
     }
