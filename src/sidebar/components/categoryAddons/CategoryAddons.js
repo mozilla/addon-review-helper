@@ -57,6 +57,31 @@ class CategoryAddons extends React.Component {
         })
     }
 
+   
+    handleDeleteButton = (addon, index) => {
+        let withAddons = this.props.withAddons;
+        let pageAddons = this.state.pageAddons;
+        let categoryAddons = withAddons[this.props.selectedCategory];
+        withAddons[this.props.selectedCategory].splice(categoryAddons.indexOf(addon), 1);
+        pageAddons.splice(index, 1);
+        if (withAddons[this.props.selectedCategory].length === 0){
+            delete withAddons[this.props.selectedCategory];
+        } else if(pageAddons.length === 0){
+            pageAddons = loadItems(withAddons[this.props.selectedCategory], 0,  this.state.perPage)
+            let totalAddons = withAddons[this.props.selectedCategory].length;
+            let totalPages = Math.ceil(totalAddons / this.state.perPage);
+            this.setState({
+                totalAddons, 
+                totalPages
+            })
+        }
+        this.setState({
+            pageAddons
+        })
+        this.props.setWithAddons(withAddons);
+        sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
+    }
+
     setList = () => {
         let items = this.state.pageAddons && this.state.pageAddons.map((addon, i) => {
             return (
@@ -74,20 +99,6 @@ class CategoryAddons extends React.Component {
         return items;
     }
 
-    handleDeleteButton = (addon, index) => {
-        let withAddons = this.props.withAddons;
-        let pageAddons = this.state.pageAddons;
-        let categoryAddons = withAddons[this.props.selectedCategory];
-        withAddons[this.props.selectedCategory].splice(categoryAddons.indexOf(addon), 1);
-        pageAddons.splice(index, 1);
-        if (withAddons[this.props.selectedCategory].length === 0)
-            delete withAddons[this.props.selectedCategory];
-        this.setState({
-            pageAddons
-        })
-        this.props.setWithAddons(withAddons);
-        sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
-    }
 
     render() {
         return (

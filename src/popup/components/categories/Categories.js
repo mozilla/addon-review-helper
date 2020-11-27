@@ -93,6 +93,7 @@ class Categories extends React.Component {
     }
 
     handleList = (index) => {
+        browser.sidebarAction.close()
         this.props.setSelectedCategory(this.props.categories[index])
         this.props.setSidebarType(CATEGORY_ADDONS);
         browser.sidebarAction.open()
