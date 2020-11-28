@@ -1,0 +1,49 @@
+.chip{
+    display: inline-flex;
+    flex-direction: row;
+    border: none;
+    cursor: default;
+    height: 36px;
+    outline: none;
+    padding: 0;
+    font-size: 14px;
+    color: #fff;
+    font-family:"Open Sans", sans-serif;
+    white-space: nowrap;
+    align-items: center;
+    border-radius: 16px;
+    vertical-align: middle;
+    text-decoration: none;
+    justify-content: center;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.small{
+    height: 12px !important;
+    font-size: 10px !important;
+}
+
+.chip-content{
+    cursor: inherit;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.blue {
+    background-color: #4285f4;
+}
+.green{
+    background-color: #2bbbad;
+}
+.purple {
+    background-color: #a6c;
+}
+
+.light-blue {
+    background-color: #33b5e5;
+}

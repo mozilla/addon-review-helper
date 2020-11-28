@@ -120,25 +120,22 @@ function updateRedux(tabId, url) {
     /**
      * withAddons - only on review pages
      */
-    if (isReview) {
-        // check for withAddons and set them in redux
-        let withAddons = browser.storage.local.get("withAddons");
-        withAddons.then((res) => {
-            if (res.withAddons) {
-                console.log("withAddons: ", res.withAddons)
-                store.dispatch(setWithAddons({
-                    payload: res.withAddons
-                }))
-
-                browser.tabs.sendMessage(
-                    tabId,
-                    {
-                        type: CHECK_WITH_ADDONS,
-                        withAddons: res.withAddons
-                    }
-                )
-            }
-        })
-    }
+    // check for withAddons and set them in redux
+    let withAddons = browser.storage.local.get("withAddons");
+    withAddons.then((res) => {
+        if (res.withAddons) {
+            store.dispatch(setWithAddons({
+                payload: res.withAddons
+            }))
+            browser.tabs.sendMessage(
+                tabId,
+                {
+                    type: CHECK_WITH_ADDONS,
+                    withAddons: res.withAddons,
+                    isReview
+                }
+            )
+        }
+    })
 }
 
