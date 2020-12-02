@@ -78,7 +78,8 @@
     "tabs",
     "https://reviewers.addons.mozilla.org/*",
     "https://reviewers.addons.allizom.org/*",
-    "storage"
+    "storage",
+    "contextMenus"
   ]
 
 }

@@ -5,8 +5,15 @@ import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/note
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
 import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
 import { setNoteExists } from "../redux/modules/currentAddon/actions";
-import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helpers";
-import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, REVIEW_URL_FILTERS, AMO_URL_FILTERS, CHECK_WITH_ADDONS } from "../utils/constants";
+import { saveToStorage, checkIfMatches, sendToBackground, checkURLMatches } from "../utils/helpers";
+import { 
+    SAVE_TO_STORAGE, 
+    REVIEW_URL_MATCHES, 
+    UPDATE_REDUX,
+    REVIEW_URL_FILTERS, 
+    AMO_URL_FILTERS, 
+    CHECK_WITH_ADDONS,
+    REDIRECT_TO } from "../utils/constants";
 import { MENU } from "../redux/modules/popup/types"
 import { setMenuType } from "../redux/modules/popup/actions"
 import { setCategories, setTotalCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
@@ -66,8 +73,6 @@ function onUpdatedHandler(tabId, changeInfo, tabInfo) {
     if (tabInfo.status === "complete")
         updateRedux(tabId, tabInfo.url);
 }
-
-
 
 function updateRedux(tabId, url) {
     if (store.getState().popup.menuType !== MENU)
@@ -145,3 +150,61 @@ function updateRedux(tabId, url) {
     }
 }
 
+browser.tabs.onActivated.addListener(handleActivated);
+
+async function handleActivated () {
+    let tabUrl = await browser.tabs.query({currentWindow: true, active: true});
+
+    if(checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)], tabUrl[0].url)) {
+         browser.contextMenus.create({
+             id: `id-${REDIRECT_TO.review}`,
+             title: `Click on ${REDIRECT_TO.review}`,
+             contexts: ["all"],
+         });
+
+         browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
+
+    } else if(checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], tabUrl[0].url)) {
+         browser.contextMenus.create({
+             id: `id-${REDIRECT_TO.content}`,
+             title: `Click on ${REDIRECT_TO.content}`,
+             contexts: ["all"],
+         });
+
+         browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
+
+    } else {
+        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
+        browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
+    } 
+}
+
+browser.contextMenus.onClicked.addListener((info, tab) => {
+    let urlUpdate;
+    if(info.menuItemId===`id-${REDIRECT_TO.review}`) {
+        urlUpdate = info.pageUrl.replace(`/review-${REDIRECT_TO.content}/`, '/review/');
+        
+        browser.contextMenus.create({
+            id: `id-${REDIRECT_TO.content}`,
+            title: `Click on ${REDIRECT_TO.content}`,
+            contexts: ["all"],
+        });
+
+        browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
+
+
+    } else {
+        urlUpdate = info.pageUrl.replace('/review/', `/review-${REDIRECT_TO.content}/`)
+                        .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
+                        .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
+                        browser.contextMenus.create({
+                            id: `id-${REDIRECT_TO.review}`,
+                            title: `Click on ${REDIRECT_TO.review}`,
+                            contexts: ["all"],
+                        });
+                
+                        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);       
+    }
+
+    browser.tabs.update({url: urlUpdate});
+});

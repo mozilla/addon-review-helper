@@ -78,7 +78,8 @@
     "tabs",
     "https://reviewers.addons.mozilla.org/*",
     "https://reviewers.addons.allizom.org/*",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self' 'unsafe-eval'"

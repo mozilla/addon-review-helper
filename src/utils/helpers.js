@@ -21,3 +21,6 @@ export function loadItems(items, lowerCount, upperCount){
 
     return pageItems
 }
+
+export function checkURLMatches(arr, url) {
+    return arr.some(str=> url.includes(str.split('*')[1]));}
