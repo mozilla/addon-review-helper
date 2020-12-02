@@ -7,7 +7,8 @@ import {
     SET_TOTAL_NOTES, 
     SET_NOTES,
     SET_ORDER_BY,
-    SET_SEARCH_BY
+    SET_SEARCH_BY,
+    SET_SELECTED_CATEGORY
 } from "./types";
 
 export function setSidebarType(payload) {
@@ -68,6 +69,13 @@ export function setOrderBy(payload) {
 export function setSearchBy(payload){
     return {
         type: SET_SEARCH_BY,
+        payload
+    }
+}
+
+export function setSelectedCategory(payload){
+    return {
+        type: SET_SELECTED_CATEGORY,
         payload
     }
 }

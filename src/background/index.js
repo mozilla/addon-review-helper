@@ -67,9 +67,6 @@ const filter = {
 browser.tabs.onUpdated.addListener(onUpdatedHandler, filter)
 
 function onUpdatedHandler(tabId, changeInfo, tabInfo) {
-    console.log("tabid", tabId)
-    console.log("changeInfo", changeInfo)
-    console.log("tabInfo", tabInfo)
     if (tabInfo.status === "complete")
         updateRedux(tabId, tabInfo.url);
 }

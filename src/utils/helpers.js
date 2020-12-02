@@ -14,13 +14,26 @@ export function checkIfMatches(expression, subject){
 }
 
 export function loadItems(items, lowerCount, upperCount){
-    let pageItems = Object.keys(items).slice(lowerCount, upperCount).reduce((result, key) => {
-        result[key] = items[key];
-        return result;
-    }, {});
-
+    let pageItems = null;
+    if (items) {
+        pageItems = items.slice(lowerCount, upperCount)
+    }
     return pageItems
 }
 
 export function checkURLMatches(arr, url) {
     return arr.some(str=> url.includes(str.split('*')[1]));}
+
+export function loadPage(items, newPage, perPage, pageItems){
+
+    let lowerCount = perPage * ( newPage - 1 );
+    let upperCount = perPage * newPage;
+    pageItems = loadItems(items, lowerCount, upperCount);
+    
+    return {
+        pageItems,
+        currentPage: newPage,
+        currentCount: upperCount
+    }
+}
+

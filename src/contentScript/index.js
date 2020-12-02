@@ -18,18 +18,25 @@ function handleMessages(message) {
                 let title = null;
                 title = getTitle();
                 getLastVersion();
-            }
-            if (message.isReview && message.notes) {
-                //DISPATCH SET CURRENT NOTE
-                message.notes.forEach((note) => {
-                    if (note.addon === title) {
-                        sendToBackground(SET_CURRENT_NOTE, note.content)
-                        sendToBackground(SET_NOTE_EXISTS, true)
+
+                console.log("TITLE", title)
+                if (message.notes) {
+                    //DISPATCH SET CURRENT NOTE
+                    let exists = false;
+                    message.notes.forEach((note) => {
+                        if (note.addon === title) {
+                            sendToBackground(SET_CURRENT_NOTE, note.content)
+                            sendToBackground(SET_NOTE_EXISTS, true)
+                            exists = true;
+                        }
+                    })
+                    if(!exists){
+                        sendToBackground(SET_CURRENT_NOTE, null)
                     }
-                })
-            } else {
-                sendToBackground(SET_CURRENT_NOTE, null)
-                sendToBackground(SET_NOTE_EXISTS, false)
+                } else {
+                    sendToBackground(SET_CURRENT_NOTE, null)
+                    sendToBackground(SET_NOTE_EXISTS, false)
+                }
             }
             break;
         }

@@ -22,12 +22,23 @@ import _ from "lodash";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Pagination from '@material-ui/lab/Pagination';
 import CurrentAddon from "./CurrentAddon";
-
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import { setSidebarType, setSelectedCategory } from "../../../redux/modules/sidebar/actions";
+import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
 
 class Categories extends React.Component {
 
     componentDidMount = () => {
         this.props.loadCategories()
+        if (this.props.withAddons) {
+            let selectedCategories = [];
+            Object.keys(this.props.withAddons).forEach(category => {
+                if (this.props.withAddons[category].indexOf(this.props.title) > -1)
+                    selectedCategories.push(category)
+            })
+            this.props.setSelectedCategories(selectedCategories)
+        }
+
     }
 
     handleCategoryChange = (event) => {
@@ -36,7 +47,6 @@ class Categories extends React.Component {
 
     handleSaveCategory = () => {
         if (this.props.currentCategory.length > 0) {
-            console.log("Categories:", this.props.categories)
             var categories = this.props.categories ?? [];
 
             if (_.isNumber(this.props.editIndex)) {
@@ -73,7 +83,6 @@ class Categories extends React.Component {
     }
 
     handlePageChange = (event, value) => {
-        console.log("PAGE", value)
         this.props.loadNewPageC(value)
     }
 
@@ -81,6 +90,13 @@ class Categories extends React.Component {
         if (e.keyCode === 13) {
             this.handleSaveCategory();
         }
+    }
+
+    handleList = (index) => {
+        browser.sidebarAction.close()
+        this.props.setSelectedCategory(this.props.categories[index])
+        this.props.setSidebarType(CATEGORY_ADDONS);
+        browser.sidebarAction.open()
     }
 
     render() {
@@ -133,18 +149,26 @@ class Categories extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {this.props.categories && Object.keys(this.props.categories).map((i, category) => (
-                                        <TableRow key={i}>
+                                    {this.props.categories && this.props.categories.map((category, index) => (
+                                        <TableRow key={index}>
                                             <TableCell component="th" scope="row">
-                                                {this.props.categories[i]}
+                                                {category}
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Button variant="contained" style={{ marginRight: "10px" }} startIcon={<DeleteForeverOutlinedIcon />}
-                                                    onClick={this.handleDelete.bind(this, i)}
+                                                    onClick={this.handleDelete.bind(this, index)}
                                                 >
                                                     Delete</Button>
+                                                {
+                                                    this.props.withAddons && category in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
+                                                        onClick={this.handleList.bind(this, index)}
+                                                    >
+                                                        View add-ons
+                                                        </Button>
+                                                }
+
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
-                                                    onClick={this.handleEdit.bind(this, i)}
+                                                    onClick={this.handleEdit.bind(this, index)}
                                                 >
                                                     Edit
                                                 </Button>
@@ -170,7 +194,9 @@ const mapDispatchToProps = {
     setTotalCategories,
     loadCategories,
     loadNewPageC,
-    setSelectedCategories
+    setSelectedCategories,
+    setSidebarType,
+    setSelectedCategory
 }
 
 const mapStateToProps = (state) => ({
@@ -182,7 +208,8 @@ const mapStateToProps = (state) => ({
     allCategories: state.categories.categories,
     selectedCategories: state.categories.selectedCategories,
     withAddons: state.categories.withAddons,
-    isReview: state.notes.canCreateNote
+    isReview: state.notes.canCreateNote,
+    title: state.currentAddon.title
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories);
