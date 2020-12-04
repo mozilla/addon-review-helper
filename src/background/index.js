@@ -69,6 +69,8 @@ browser.tabs.onUpdated.addListener(onUpdatedHandler, filter)
 function onUpdatedHandler(tabId, changeInfo, tabInfo) {
     if (tabInfo.status === "complete")
         updateRedux(tabId, tabInfo.url);
+
+    handleActivated();
 }
 
 function updateRedux(tabId, url) {
@@ -155,7 +157,7 @@ async function handleActivated () {
     if(checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)], tabUrl[0].url)) {
          browser.contextMenus.create({
              id: `id-${REDIRECT_TO.review}`,
-             title: `Click on ${REDIRECT_TO.review}`,
+             title: `Go to ${REDIRECT_TO.review}`,
              contexts: ["all"],
          });
 
@@ -164,7 +166,7 @@ async function handleActivated () {
     } else if(checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], tabUrl[0].url)) {
          browser.contextMenus.create({
              id: `id-${REDIRECT_TO.content}`,
-             title: `Click on ${REDIRECT_TO.content}`,
+             title: `Go to ${REDIRECT_TO.content}`,
              contexts: ["all"],
          });
 
@@ -194,13 +196,14 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
         urlUpdate = info.pageUrl.replace('/review/', `/review-${REDIRECT_TO.content}/`)
                         .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
                         .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
-                        browser.contextMenus.create({
-                            id: `id-${REDIRECT_TO.review}`,
-                            title: `Click on ${REDIRECT_TO.review}`,
-                            contexts: ["all"],
-                        });
-                
-                        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);       
+
+        browser.contextMenus.create({
+            id: `id-${REDIRECT_TO.review}`,
+            title: `Click on ${REDIRECT_TO.review}`,
+            contexts: ["all"],
+        });
+
+        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);       
     }
 
     browser.tabs.update({url: urlUpdate});
