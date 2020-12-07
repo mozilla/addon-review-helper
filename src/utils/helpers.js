@@ -21,6 +21,9 @@ export function loadItems(items, lowerCount, upperCount){
     return pageItems
 }
 
+export function checkURLMatches(arr, url) {
+    return arr.some(str=> url.includes(str.split('*')[1]));}
+
 export function loadPage(items, newPage, perPage, pageItems){
 
     let lowerCount = perPage * ( newPage - 1 );
@@ -33,3 +36,4 @@ export function loadPage(items, newPage, perPage, pageItems){
         currentCount: upperCount
     }
 }
+
