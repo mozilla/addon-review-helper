@@ -106,7 +106,7 @@ function updateRedux(tabId, url) {
         console.log("CATEGORIES: ", res.categories)
         if (res.categories) {
             store.dispatch(setCategories({
-                payload: JSON.parse(res.categories)
+                payload: res.categories
             }))
         } 
     })

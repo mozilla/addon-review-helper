@@ -29,30 +29,37 @@ import { loadPage, loadItems } from "../../../utils/helpers";
 
 class Categories extends React.Component {
 
-    constructor(){
+    constructor() {
         super();
         const perPage = 5;
         this.state = {
             pageCategories: [],
             perPage,
             currentCount: perPage,
-            totalAddons: null,
+            totalCategories: null,
             currentPage: 1,
             totalPages: 1
         }
     }
 
-    componentDidMount = () => {
-        let categories = this.props.allCategories;
+    loadFirstPage = (categories) => {
         let totalCategories = categories.length;
-        let pageCategories = loadItems(categories, 0, this.state.perPage);
-        let totalPages = Math.ceil(totalCategories / this.state.perPage);
+        let perPage = this.state.perPage;
+        let pageCategories = loadItems(categories, 0, perPage);
+        let totalPages = Math.ceil(totalCategories / perPage);
 
         this.setState({
             pageCategories,
             totalCategories,
-            totalPages
+            totalPages,
+            currentPage: 1,
+            currentCount: perPage
         })
+    }
+
+    componentDidMount = () => {
+        this.loadFirstPage(this.props.categories);
+
 
         if (this.props.withAddons) {
             let selectedCategories = [];
@@ -71,7 +78,7 @@ class Categories extends React.Component {
 
     handleSaveCategory = () => {
         if (this.props.currentCategory.length > 0) {
-            var categories = this.props.allCategories ?? [];
+            var categories = this.props.categories ?? [];
 
             if (_.isNumber(this.props.editIndex)) {
                 categories[this.props.editIndex] = this.props.currentCategory;
@@ -86,25 +93,19 @@ class Categories extends React.Component {
 
             //pagination
 
-            let totalCategories = categories.length;
-            let pageCategories = loadItems(categories, 0, this.state.perPage);
-            let totalPages = Math.ceil(totalCategories / this.state.perPage);
-    
-            this.setState({
-                pageCategories,
-                totalCategories,
-                totalPages
-            })
+            this.loadFirstPage(categories);
+
         }
     }
 
     handleDelete = (category) => {
-        var categories = this.props.allCategories;
+        var categories = this.props.categories;
         categories.splice(categories.indexOf(category), 1)
         var newCategories = _.isEmpty(categories) ? [] : categories;
         sendToBackground(SAVE_TO_STORAGE, { 'categories': newCategories })
         this.props.setCategories(newCategories);
-        this.props.loadCategories();
+        this.loadFirstPage(categories);
+
     }
 
     handleEdit = (index) => {
@@ -119,7 +120,7 @@ class Categories extends React.Component {
 
     handlePageChange = (event, page) => {
         let results = loadPage(
-            this.props.allCategories,
+            this.props.categories,
             page,
             this.state.perPage
         )
@@ -244,7 +245,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state) => ({
     currentCategory: state.categories.currentCategory,
     editIndex: state.categories.editIndex,
-    allCategories: state.categories.categories,
+    categories: state.categories.categories,
     selectedCategories: state.categories.selectedCategories,
     withAddons: state.categories.withAddons,
     isReview: state.notes.canCreateNote,
