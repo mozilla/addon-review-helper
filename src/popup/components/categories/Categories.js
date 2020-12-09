@@ -82,13 +82,14 @@ class Categories extends React.Component {
 
             if (_.isNumber(this.props.editIndex)) {
                 categories[this.props.editIndex] = this.props.currentCategory;
+                this.props.setEditIndex(null);
             } else {
                 categories.push(this.props.currentCategory);
             }
 
             categories = categories.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
             this.props.setCategories(categories);
-            sendToBackground(SAVE_TO_STORAGE, { 'categories': JSON.stringify(categories) })
+            sendToBackground(SAVE_TO_STORAGE, { 'categories': categories })
             this.props.setCurrentCategory('')
 
             //pagination
@@ -108,8 +109,8 @@ class Categories extends React.Component {
 
     }
 
-    handleEdit = (index) => {
-        var category = this.props.categories[index];
+    handleEdit = (category) => {
+        var index = this.props.categories.indexOf(category);
         this.props.setCurrentCategory(category);
         this.props.setEditIndex(index);
     }
@@ -214,7 +215,7 @@ class Categories extends React.Component {
                                                 }
 
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
-                                                    onClick={this.handleEdit.bind(this, index)}
+                                                    onClick={this.handleEdit.bind(this, category)}
                                                 >
                                                     Edit
                                                 </Button>
