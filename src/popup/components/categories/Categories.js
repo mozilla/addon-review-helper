@@ -70,6 +70,7 @@ class Categories extends React.Component {
         var newCategories = _.isEmpty(categories) ? [] : categories;
         sendToBackground(SAVE_TO_STORAGE, { 'categories': newCategories })
         this.props.setCategories(newCategories);
+        this.props.loadCategories();
     }
 
     handleEdit = (index) => {
