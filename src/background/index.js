@@ -9,7 +9,7 @@ import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helper
 import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, REVIEW_URL_FILTERS, AMO_URL_FILTERS, CHECK_WITH_ADDONS } from "../utils/constants";
 import { MENU } from "../redux/modules/popup/types"
 import { setMenuType } from "../redux/modules/popup/actions"
-import { setCategories, setTotalCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
+import { setCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
 import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types";
 console.log('Background.js file loaded');
 
@@ -108,14 +108,7 @@ function updateRedux(tabId, url) {
             store.dispatch(setCategories({
                 payload: JSON.parse(res.categories)
             }))
-            store.dispatch(setTotalCategories({
-                payload: JSON.parse(res.categories).length
-            }))
-        } else {
-            store.dispatch(setTotalCategories({
-                payload: 0
-            }))
-        }
+        } 
     })
     /**
      * withAddons - only on review pages

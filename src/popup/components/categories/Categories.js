@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import "./Categories.css";
 import Grid from '@material-ui/core/Grid';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import { setCurrentCategory, setCategories, setEditIndex, setTotalCategories, loadCategories, loadNewPageC, setSelectedCategories } from "../../../redux/modules/categories/actions"
+import { setCurrentCategory, setCategories, setEditIndex, setSelectedCategories } from "../../../redux/modules/categories/actions"
 import { setMenuType } from "../../../redux/modules/popup/actions"
 import { MENU } from "../../../redux/modules/popup/types"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -25,11 +25,35 @@ import CurrentAddon from "./CurrentAddon";
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { setSidebarType, setSelectedCategory } from "../../../redux/modules/sidebar/actions";
 import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
+import { loadPage, loadItems } from "../../../utils/helpers";
 
 class Categories extends React.Component {
 
+    constructor(){
+        super();
+        const perPage = 5;
+        this.state = {
+            pageCategories: [],
+            perPage,
+            currentCount: perPage,
+            totalAddons: null,
+            currentPage: 1,
+            totalPages: 1
+        }
+    }
+
     componentDidMount = () => {
-        this.props.loadCategories()
+        let categories = this.props.allCategories;
+        let totalCategories = categories.length;
+        let pageCategories = loadItems(categories, 0, this.state.perPage);
+        let totalPages = Math.ceil(totalCategories / this.state.perPage);
+
+        this.setState({
+            pageCategories,
+            totalCategories,
+            totalPages
+        })
+
         if (this.props.withAddons) {
             let selectedCategories = [];
             Object.keys(this.props.withAddons).forEach(category => {
@@ -57,10 +81,20 @@ class Categories extends React.Component {
 
             categories = categories.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
             this.props.setCategories(categories);
-            this.props.setTotalCategories(categories.length);
             sendToBackground(SAVE_TO_STORAGE, { 'categories': JSON.stringify(categories) })
             this.props.setCurrentCategory('')
-            this.props.loadCategories();
+
+            //pagination
+
+            let totalCategories = categories.length;
+            let pageCategories = loadItems(categories, 0, this.state.perPage);
+            let totalPages = Math.ceil(totalCategories / this.state.perPage);
+    
+            this.setState({
+                pageCategories,
+                totalCategories,
+                totalPages
+            })
         }
     }
 
@@ -83,8 +117,18 @@ class Categories extends React.Component {
         this.props.setMenuType(MENU)
     }
 
-    handlePageChange = (event, value) => {
-        this.props.loadNewPageC(value)
+    handlePageChange = (event, page) => {
+        let results = loadPage(
+            this.props.allCategories,
+            page,
+            this.state.perPage
+        )
+
+        this.setState({
+            pageCategories: results.pageItems,
+            currentPage: results.currentPage,
+            currentCount: results.currentCount
+        })
     }
 
     handleKeyPressed = (e) => {
@@ -150,7 +194,7 @@ class Categories extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {this.props.categories && this.props.categories.map((category, index) => (
+                                    {this.state.pageCategories && this.state.pageCategories.map((category, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
                                                 {category}
@@ -178,7 +222,7 @@ class Categories extends React.Component {
                                     ))}
                                 </TableBody>
                             </Table>
-                            <Pagination count={this.props.totalPages} page={this.props.currentPage} onChange={this.handlePageChange} />
+                            <Pagination count={this.state.totalPages} page={this.state.currentPage} onChange={this.handlePageChange} />
                         </TableContainer>
                     </Grid>
                 </Grid>
@@ -192,9 +236,6 @@ const mapDispatchToProps = {
     setCategories,
     setMenuType,
     setEditIndex,
-    setTotalCategories,
-    loadCategories,
-    loadNewPageC,
     setSelectedCategories,
     setSidebarType,
     setSelectedCategory
@@ -202,10 +243,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => ({
     currentCategory: state.categories.currentCategory,
-    categories: state.categories.pageCategories,
     editIndex: state.categories.editIndex,
-    totalPages: state.categories.totalPages,
-    currentPage: state.categories.currentPage,
     allCategories: state.categories.categories,
     selectedCategories: state.categories.selectedCategories,
     withAddons: state.categories.withAddons,

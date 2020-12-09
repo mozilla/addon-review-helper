@@ -21,11 +21,11 @@ export function loadItems(items, lowerCount, upperCount){
     return pageItems
 }
 
-export function loadPage(items, newPage, perPage, pageItems){
+export function loadPage(items, newPage, perPage){
 
     let lowerCount = perPage * ( newPage - 1 );
     let upperCount = perPage * newPage;
-    pageItems = loadItems(items, lowerCount, upperCount);
+    let pageItems = loadItems(items, lowerCount, upperCount);
     
     return {
         pageItems,

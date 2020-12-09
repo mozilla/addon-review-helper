@@ -10,8 +10,8 @@ import { setSidebarType, setNotes, setSidebarContent, setSidebarTitle, loadData,
 import { SET_MENU_TYPE } from "./modules/popup/types";
 import { setMenuType } from "./modules/popup/actions";
 
-import { SET_CATEGORIES, SET_CURRENT_CATEGORY, SET_EDIT_INDEX, SET_TOTAL_CATEGORIES, LOAD_CATEGORIES, LOAD_NEW_PAGE_CATEGORIES, SET_SELECTED_CATEGORIES, SET_WITH_ADDONS } from "./modules/categories/types";
-import { setCategories, setCurrentCategory, setEditIndex, setTotalCategories, loadCategories, loadNewPageC, setSelectedCategories, setWithAddons } from "./modules/categories/actions";
+import { SET_CATEGORIES, SET_CURRENT_CATEGORY, SET_EDIT_INDEX, SET_SELECTED_CATEGORIES, SET_WITH_ADDONS } from "./modules/categories/types";
+import { setCategories, setCurrentCategory, setEditIndex,  setSelectedCategories, setWithAddons } from "./modules/categories/actions";
 
 export default {
     CREATE_NOTE: createNote,
@@ -38,9 +38,6 @@ export default {
     SET_CATEGORIES: setCategories,
     SET_CURRENT_CATEGORY: setCurrentCategory,
     SET_EDIT_INDEX: setEditIndex,
-    SET_TOTAL_CATEGORIES: setTotalCategories,
-    LOAD_CATEGORIES: loadCategories,
-    LOAD_NEW_PAGE_CATEGORIES: loadNewPageC,
     SET_SELECTED_CATEGORIES: setSelectedCategories,
     SET_WITH_ADDONS: setWithAddons,
     
