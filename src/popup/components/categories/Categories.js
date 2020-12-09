@@ -47,7 +47,7 @@ class Categories extends React.Component {
 
     handleSaveCategory = () => {
         if (this.props.currentCategory.length > 0) {
-            var categories = this.props.categories ?? [];
+            var categories = this.props.allCategories ?? [];
 
             if (_.isNumber(this.props.editIndex)) {
                 categories[this.props.editIndex] = this.props.currentCategory;
@@ -64,9 +64,9 @@ class Categories extends React.Component {
         }
     }
 
-    handleDelete = (index) => {
-        var categories = this.props.categories;
-        categories.splice(index, 1)
+    handleDelete = (category) => {
+        var categories = this.props.allCategories;
+        categories.splice(categories.indexOf(category), 1)
         var newCategories = _.isEmpty(categories) ? [] : categories;
         sendToBackground(SAVE_TO_STORAGE, { 'categories': newCategories })
         this.props.setCategories(newCategories);
@@ -157,7 +157,7 @@ class Categories extends React.Component {
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Button variant="contained" style={{ marginRight: "10px" }} startIcon={<DeleteForeverOutlinedIcon />}
-                                                    onClick={this.handleDelete.bind(this, index)}
+                                                    onClick={this.handleDelete.bind(this, category)}
                                                 >
                                                     Delete</Button>
                                                 {
