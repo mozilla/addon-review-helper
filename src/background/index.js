@@ -5,18 +5,12 @@ import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/note
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
 import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
 import { setNoteExists } from "../redux/modules/currentAddon/actions";
-import { saveToStorage, checkIfMatches, sendToBackground, checkURLMatches } from "../utils/helpers";
-import { 
-    SAVE_TO_STORAGE, 
-    REVIEW_URL_MATCHES, 
-    UPDATE_REDUX,
-    REVIEW_URL_FILTERS, 
-    AMO_URL_FILTERS, 
-    CHECK_WITH_ADDONS,
-    REDIRECT_TO } from "../utils/constants";
+import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helpers";
+import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, AMO_URL_MATCHES, AMO_URL_FILTERS, CHECK_WITH_ADDONS } from "../utils/constants";
+
 import { MENU } from "../redux/modules/popup/types"
 import { setMenuType } from "../redux/modules/popup/actions"
-import { setCategories, setTotalCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
+import { setCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
 import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types";
 console.log('Background.js file loaded');
 
@@ -60,11 +54,8 @@ function handleMessages(message) {
 }
 
 // Update content on a tab changes URL
-const filter = {
-    urls: AMO_URL_FILTERS
-}
 
-browser.tabs.onUpdated.addListener(onUpdatedHandler, filter)
+browser.tabs.onUpdated.addListener(onUpdatedHandler)
 
 function onUpdatedHandler(tabId, changeInfo, tabInfo) {
     if (tabInfo.status === "complete")
@@ -74,74 +65,72 @@ function onUpdatedHandler(tabId, changeInfo, tabInfo) {
 }
 
 function updateRedux(tabId, url) {
-    if (store.getState().popup.menuType !== MENU)
-        store.dispatch(setMenuType({ 'payload': MENU }))
+    // if AMO page
     let isReview = checkIfMatches(REVIEW_URL_MATCHES, url);
     store.dispatch(canCreateNote(isReview))
-    /**
-     * Notes
-     */
-    let notes = browser.storage.local.get('notes');
-    notes.then((res) => {
-        console.log("NOTES IN STORAGE", res.notes)
-        if (res.notes) {
-            store.dispatch(setTotalNotes({
-                payload: Object.keys(res.notes).length
-            }))
-        } else {
-            store.dispatch(setTotalNotes({
-                payload: 0
-            }))
-        }
-        store.dispatch(setNotes({
-            payload: res.notes
-        }))
-        browser.tabs.sendMessage(
-            tabId,
-            {
-                type: UPDATE_REDUX,
-                notes: res.notes,
-                isReview
+
+    browser.browserAction.setBadgeText(
+        { text: "" }// object
+    )
+    if (checkIfMatches(AMO_URL_MATCHES, url)) {
+        if (store.getState().popup.menuType !== MENU)
+            store.dispatch(setMenuType({ 'payload': MENU }))
+
+        /**
+         * Notes
+         */
+        let notes = browser.storage.local.get('notes');
+        notes.then((res) => {
+            console.log("NOTES IN STORAGE", res.notes)
+            if (res.notes) {
+                store.dispatch(setTotalNotes({
+                    payload: Object.keys(res.notes).length
+                }))
+            } else {
+                store.dispatch(setTotalNotes({
+                    payload: 0
+                }))
             }
-        )
-    });
-    /**
-     * Categories
-     */
-    let categories = browser.storage.local.get('categories');
-    categories.then((res) => {
-        console.log("CATEGORIES: ", res.categories)
-        if (res.categories) {
-            store.dispatch(setCategories({
-                payload: JSON.parse(res.categories)
+            store.dispatch(setNotes({
+                payload: res.notes
             }))
-            store.dispatch(setTotalCategories({
-                payload: JSON.parse(res.categories).length
-            }))
-        } else {
-            store.dispatch(setTotalCategories({
-                payload: 0
-            }))
-        }
-    })
-    /**
-     * withAddons - only on review pages
-     */
-    if (isReview) {
+            browser.tabs.sendMessage(
+                tabId,
+                {
+                    type: UPDATE_REDUX,
+                    notes: res.notes,
+                    isReview
+                }
+            )
+        });
+        /**
+         * Categories
+         */
+        let categories = browser.storage.local.get('categories');
+        categories.then((res) => {
+            console.log("CATEGORIES: ", res.categories)
+            if (res.categories) {
+                store.dispatch(setCategories({
+                    payload: res.categories
+                }))
+            }
+        })
+        /**
+         * withAddons - only on review pages
+         */
         // check for withAddons and set them in redux
         let withAddons = browser.storage.local.get("withAddons");
         withAddons.then((res) => {
             if (res.withAddons) {
-                console.log("withAddons: ", res.withAddons)
                 store.dispatch(setWithAddons({
                     payload: res.withAddons
                 }))
-
                 browser.tabs.sendMessage(
                     tabId,
                     {
                         type: CHECK_WITH_ADDONS,
-                        withAddons: res.withAddons
+                        withAddons: res.withAddons,
+                        isReview
                     }
                 )
             }

@@ -2,6 +2,7 @@ export const SAVE_TO_STORAGE = "SAVE_TO_STORAGE";
 export const UPDATE_REDUX = "UPDATE_REDUX";
 export const CHECK_WITH_ADDONS = "CHECK_WITH_ADDONS";
 export const REVIEW_URL_MATCHES = /https:\/\/reviewers\.addons\.mozilla\.org\/?([a-z]{2}-[A-Z]{2})?\/reviewers\/review[-a-z]*\/[aA-zZ]*/
+export const AMO_URL_MATCHES = /https:\/\/reviewers.addons/
 export const REVIEW_URL_FILTERS = [
     "https://reviewers.addons.mozilla.org/*/reviewers/review/*",
     "https://reviewers.addons.mozilla.org/*/reviewers/review-listed/*",

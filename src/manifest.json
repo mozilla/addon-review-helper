@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Reviewer Tool",
-  "description": "This extension is a starting point to create a real Chrome extension",
+  "description": "This extension is for reviewers",
   "version": "0.0.1",
 
   "icons": {
@@ -19,9 +19,9 @@
   "sidebar_action": {
     "default_icon": "img/logo-small.png",
     "default_panel": "sidebar.html",
-    "open_at_install":false
+    "open_at_install": false
   },
-  
+
   "web_accessible_resources": [
     "sidebar.html"
   ],
@@ -71,6 +71,9 @@
     ],
     "js": [
       "content.js"
+    ],
+    "css": [
+      "content.css"
     ]
   }],
   "permissions": [

@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import "./Categories.css";
 import Grid from '@material-ui/core/Grid';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import { setCurrentCategory, setCategories, setEditIndex, setTotalCategories, loadCategories, loadNewPageC, setSelectedCategories } from "../../../redux/modules/categories/actions"
+import { setCurrentCategory, setCategories, setEditIndex, setSelectedCategories } from "../../../redux/modules/categories/actions"
 import { setMenuType } from "../../../redux/modules/popup/actions"
 import { MENU } from "../../../redux/modules/popup/types"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -25,11 +25,42 @@ import CurrentAddon from "./CurrentAddon";
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { setSidebarType, setSelectedCategory } from "../../../redux/modules/sidebar/actions";
 import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
+import { loadPage, loadItems } from "../../../utils/helpers";
 
 class Categories extends React.Component {
 
+    constructor() {
+        super();
+        const perPage = 5;
+        this.state = {
+            pageCategories: [],
+            perPage,
+            currentCount: perPage,
+            totalCategories: null,
+            currentPage: 1,
+            totalPages: 1
+        }
+    }
+
+    loadFirstPage = (categories) => {
+        let totalCategories = categories.length;
+        let perPage = this.state.perPage;
+        let pageCategories = loadItems(categories, 0, perPage);
+        let totalPages = Math.ceil(totalCategories / perPage);
+
+        this.setState({
+            pageCategories,
+            totalCategories,
+            totalPages,
+            currentPage: 1,
+            currentCount: perPage
+        })
+    }
+
     componentDidMount = () => {
-        this.props.loadCategories()
+        this.loadFirstPage(this.props.categories);
+
+
         if (this.props.withAddons) {
             let selectedCategories = [];
             Object.keys(this.props.withAddons).forEach(category => {
@@ -51,29 +82,35 @@ class Categories extends React.Component {
 
             if (_.isNumber(this.props.editIndex)) {
                 categories[this.props.editIndex] = this.props.currentCategory;
+                this.props.setEditIndex(null);
             } else {
                 categories.push(this.props.currentCategory);
             }
 
             categories = categories.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
             this.props.setCategories(categories);
-            this.props.setTotalCategories(categories.length);
-            sendToBackground(SAVE_TO_STORAGE, { 'categories': JSON.stringify(categories) })
+            sendToBackground(SAVE_TO_STORAGE, { 'categories': categories })
             this.props.setCurrentCategory('')
-            this.props.loadCategories();
+
+            //pagination
+
+            this.loadFirstPage(categories);
+
         }
     }
 
-    handleDelete = (index) => {
+    handleDelete = (category) => {
         var categories = this.props.categories;
-        categories.splice(index, 1)
+        categories.splice(categories.indexOf(category), 1)
         var newCategories = _.isEmpty(categories) ? [] : categories;
         sendToBackground(SAVE_TO_STORAGE, { 'categories': newCategories })
         this.props.setCategories(newCategories);
+        this.loadFirstPage(categories);
+
     }
 
-    handleEdit = (index) => {
-        var category = this.props.categories[index];
+    handleEdit = (category) => {
+        var index = this.props.categories.indexOf(category);
         this.props.setCurrentCategory(category);
         this.props.setEditIndex(index);
     }
@@ -82,8 +119,18 @@ class Categories extends React.Component {
         this.props.setMenuType(MENU)
     }
 
-    handlePageChange = (event, value) => {
-        this.props.loadNewPageC(value)
+    handlePageChange = (event, page) => {
+        let results = loadPage(
+            this.props.categories,
+            page,
+            this.state.perPage
+        )
+
+        this.setState({
+            pageCategories: results.pageItems,
+            currentPage: results.currentPage,
+            currentCount: results.currentCount
+        })
     }
 
     handleKeyPressed = (e) => {
@@ -149,14 +196,14 @@ class Categories extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {this.props.categories && this.props.categories.map((category, index) => (
+                                    {this.state.pageCategories && this.state.pageCategories.map((category, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
                                                 {category}
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Button variant="contained" style={{ marginRight: "10px" }} startIcon={<DeleteForeverOutlinedIcon />}
-                                                    onClick={this.handleDelete.bind(this, index)}
+                                                    onClick={this.handleDelete.bind(this, category)}
                                                 >
                                                     Delete</Button>
                                                 {
@@ -168,7 +215,7 @@ class Categories extends React.Component {
                                                 }
 
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
-                                                    onClick={this.handleEdit.bind(this, index)}
+                                                    onClick={this.handleEdit.bind(this, category)}
                                                 >
                                                     Edit
                                                 </Button>
@@ -177,7 +224,7 @@ class Categories extends React.Component {
                                     ))}
                                 </TableBody>
                             </Table>
-                            <Pagination count={this.props.totalPages} page={this.props.currentPage} onChange={this.handlePageChange} />
+                            <Pagination count={this.state.totalPages} page={this.state.currentPage} onChange={this.handlePageChange} />
                         </TableContainer>
                     </Grid>
                 </Grid>
@@ -191,9 +238,6 @@ const mapDispatchToProps = {
     setCategories,
     setMenuType,
     setEditIndex,
-    setTotalCategories,
-    loadCategories,
-    loadNewPageC,
     setSelectedCategories,
     setSidebarType,
     setSelectedCategory
@@ -201,11 +245,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => ({
     currentCategory: state.categories.currentCategory,
-    categories: state.categories.pageCategories,
     editIndex: state.categories.editIndex,
-    totalPages: state.categories.totalPages,
-    currentPage: state.categories.currentPage,
-    allCategories: state.categories.categories,
+    categories: state.categories.categories,
     selectedCategories: state.categories.selectedCategories,
     withAddons: state.categories.withAddons,
     isReview: state.notes.canCreateNote,
