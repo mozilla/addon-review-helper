@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Reviewer Tool",
-  "description": "This extension is a starting point to create a real Chrome extension",
+  "description": "This extension is for reviewers",
   "version": "0.0.1",
 
   "icons": {
