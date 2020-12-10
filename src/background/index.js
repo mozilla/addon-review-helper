@@ -5,8 +5,8 @@ import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/note
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
 import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
 import { setNoteExists } from "../redux/modules/currentAddon/actions";
-import { saveToStorage, checkIfMatches, sendToBackground } from "../utils/helpers";
-import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, AMO_URL_MATCHES, AMO_URL_FILTERS, CHECK_WITH_ADDONS } from "../utils/constants";
+import { saveToStorage, checkIfMatches, sendToBackground, checkURLMatches } from "../utils/helpers";
+import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, AMO_URL_MATCHES, AMO_URL_FILTERS, CHECK_WITH_ADDONS, REVIEW_URL_FILTERS, REDIRECT_TO } from "../utils/constants";
 
 import { MENU } from "../redux/modules/popup/types"
 import { setMenuType } from "../redux/modules/popup/actions"
