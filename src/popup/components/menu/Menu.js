@@ -16,8 +16,12 @@ import { setMenuType } from "../../../redux/modules/popup/actions";
 import { NOTE, CATEGORIES } from "../../../redux/modules/popup/types";
 import { setSidebarType } from "../../../redux/modules/sidebar/actions";
 import { NOTES } from "../../../redux/modules/sidebar/types";
-
-
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import FolderIcon from '@material-ui/icons/Folder';
+import RestoreIcon from '@material-ui/icons/Restore';
+import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
+import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
 class Menu extends React.Component {
 
     openToDoList() {
@@ -46,17 +50,39 @@ class Menu extends React.Component {
         this.props.setMenuType(NOTE);
     }
 
+    handleOpenPage = (event, newValue) => {
+        switch (newValue) {
+            case "bugs":
+                browser.tabs.create({
+                    url:"https://docs.google.com/document/d/15URvcePcJWm1e2_ybzUnjOi63Ks2WWQ9YJHGZkETG6Y/edit?usp=sharing"
+                  });
+                break;
+            case "guide":
+                browser.tabs.create({
+                    url:"https://drive.google.com/file/d/1wJpEzB2X9IR2UXSBhcS8jMLwnsc2hShf/view?usp=sharing"
+                  });
+                break;
+            default:
+            //nothing
+        }
+        console.log("new value", newValue)
+    }
+
     render() {
 
         return (
             <div>
                 <Box>
+                    <BottomNavigation onChange={this.handleOpenPage}>
+                        <BottomNavigationAction label="Guide" value="guide" icon={<SlideshowOutlinedIcon />} />
+                        <BottomNavigationAction label="Bugs" value="bugs" icon={<BugReportOutlinedIcon />} />
+                    </BottomNavigation>
                     <MenuList>
-                        <MenuItem onClick={this.openToDoList} disabled={true}><DoneAllIcon />  To-do List</MenuItem>
+                        {/* <MenuItem onClick={this.openToDoList} disabled={true}><DoneAllIcon />  To-do List</MenuItem> */}
                         <MenuItem onClick={this.openCategories}><ListIcon /> Categories</MenuItem>
-                        <MenuItem onClick={this.openHistoryReview} disabled={true}><QueryBuilderIcon /> History Review</MenuItem>
+                        {/* <MenuItem onClick={this.openHistoryReview} disabled={true}><QueryBuilderIcon /> History Review</MenuItem> */}
                         <MenuItem onClick={this.openNotes}><NoteIcon /> Notes</MenuItem>
-                        <MenuItem onClick={this.openHiddenAddons} disabled={true}><VisibilityOffOutlinedIcon /> Hidden Add-ons</MenuItem>
+                        {/* <MenuItem onClick={this.openHiddenAddons} disabled={true}><VisibilityOffOutlinedIcon /> Hidden Add-ons</MenuItem> */}
                     </MenuList>
                 </Box>
                 <Button
