@@ -52,11 +52,11 @@ class Menu extends React.Component {
             <div>
                 <Box>
                     <MenuList>
-                        <MenuItem onClick={this.openToDoList}><DoneAllIcon />  To-do List</MenuItem>
+                        <MenuItem onClick={this.openToDoList} disabled={true}><DoneAllIcon />  To-do List</MenuItem>
                         <MenuItem onClick={this.openCategories}><ListIcon /> Categories</MenuItem>
-                        <MenuItem onClick={this.openHistoryReview}><QueryBuilderIcon /> History Review</MenuItem>
+                        <MenuItem onClick={this.openHistoryReview} disabled={true}><QueryBuilderIcon /> History Review</MenuItem>
                         <MenuItem onClick={this.openNotes}><NoteIcon /> Notes</MenuItem>
-                        <MenuItem onClick={this.openHiddenAddons}><VisibilityOffOutlinedIcon /> Hidden Add-ons</MenuItem>
+                        <MenuItem onClick={this.openHiddenAddons} disabled={true}><VisibilityOffOutlinedIcon /> Hidden Add-ons</MenuItem>
                     </MenuList>
                 </Box>
                 <Button
