@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { setSidebarType, setSidebarTitle, setSidebarContent } from "../../../redux/modules/sidebar/actions"
+import { setSidebarType, setSidebarTitle, setSidebarContent, setCurrentPage } from "../../../redux/modules/sidebar/actions"
 import { NOTE, DATE_ASC, DATE_DESC, TITLE_ASC, TITLE_DESC } from "../../../redux/modules/sidebar/types"
 import { setNotes } from "../../../redux/modules/sidebar/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -25,12 +25,11 @@ class Notes extends React.Component {
 
     constructor() {
         super();
-        const perPage = 10;
+        const perPage = 2;
         this.state = {
             pageNotes: [],
             perPage,
             currentCount: perPage,
-            currentPage: 1,
             totalPages: 1,
             orderBy: DATE_DESC,
             searchBy: null,
@@ -46,13 +45,19 @@ class Notes extends React.Component {
         this.setState({
             pageNotes,
             totalPages,
-            currentPage: 1,
             currentCount: perPage,
         })
     }
 
     componentDidMount = () => {
-        this.loadFirstPage(this.props.notes);
+        let results = loadPage(this.props.notes, this.props.currentPage, this.state.perPage);
+        let totalPages = Math.ceil(this.props.notes.length / this.state.perPage);
+
+        this.setState({
+            pageNotes: results.pageItems,
+            currentCount: results.currentCount,
+            totalPages
+        })
     }
 
     handlePageChange = (event, page) => {
@@ -66,9 +71,9 @@ class Notes extends React.Component {
             this.state.perPage
         )
 
+        this.props.setCurrentPage(results.currentPage)
         this.setState({
             pageNotes: results.pageItems,
-            currentPage: results.currentPage,
             currentCount: results.currentCount
         })
     }
@@ -124,7 +129,7 @@ class Notes extends React.Component {
             notes = this.searchNotes(notes, this.state.searchBy);
         }
         let totalPages = Math.ceil(notes.length / this.state.perPage);
-        let currentPage = this.state.currentPage;
+        let currentPage = this.props.currentPage;
         if (totalPages < this.state.totalPages) {
             currentPage--;
         }
@@ -134,9 +139,9 @@ class Notes extends React.Component {
             currentPage,
             this.state.perPage
         )
+        this.props.setCurrentPage(currentPage)
         this.setState({
             pageNotes: results.pageItems,
-            currentPage,
             currentCount: results.currentCount,
             totalPages
         })
@@ -228,7 +233,7 @@ class Notes extends React.Component {
                 {
                     this.setList()
                 }
-                <Pagination count={this.state.totalPages} page={this.state.currentPage} onChange={this.handlePageChange} />
+                <Pagination count={this.state.totalPages} page={this.props.currentPage} onChange={this.handlePageChange} />
             </List>
         )
     }
@@ -238,11 +243,13 @@ const mapDispatchToProps = {
     setSidebarType,
     setSidebarTitle,
     setSidebarContent,
-    setNotes
+    setNotes,
+    setCurrentPage
 }
 
 const mapStateToProps = (state) => ({
     notes: state.sidebar.notes,
+    currentPage: state.sidebar.currentPage
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notes);

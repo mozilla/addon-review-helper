@@ -4,7 +4,8 @@ import {
     SET_SIDEBAR_TITLE,
     SET_SIDEBAR_CONTENT,
     SET_NOTES,
-    SET_SELECTED_CATEGORY
+    SET_SELECTED_CATEGORY,
+    SET_CURRENT_PAGE
 } from "./types";
 
 const initialState = {
@@ -12,7 +13,8 @@ const initialState = {
     title: null,
     content: null,
     notes: [],
-    selectedCategory: null
+    selectedCategory: null,
+    currentPage: 1
 }
 
 export default (state = initialState, action) => {
@@ -41,6 +43,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 selectedCategory: action.payload.payload
+            }
+        case SET_CURRENT_PAGE:
+            return {
+                ...state,
+                currentPage: action.payload.payload
             }
         default:
             return state;

@@ -3,7 +3,8 @@ import {
     SET_SIDEBAR_TITLE,
     SET_SIDEBAR_CONTENT,
     SET_NOTES,
-    SET_SELECTED_CATEGORY
+    SET_SELECTED_CATEGORY,
+    SET_CURRENT_PAGE
 } from "./types";
 
 export function setSidebarType(payload) {
@@ -37,6 +38,13 @@ export function setNotes(payload) {
 export function setSelectedCategory(payload){
     return {
         type: SET_SELECTED_CATEGORY,
+        payload
+    }
+}
+
+export function setCurrentPage(payload){
+    return {
+        type: SET_CURRENT_PAGE,
         payload
     }
 }

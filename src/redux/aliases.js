@@ -4,8 +4,8 @@ import { CREATE_NOTE, SET_CURRENT_NOTE,  CAN_CREATE_NOTE } from "./modules/notes
 import { SET_TITLE, SET_VERSION, SET_NOTE_EXISTS } from "./modules/currentAddon/types";
 import { setTitle, setVersion, setNoteExists } from "./modules/currentAddon/actions";
 
-import { SET_SIDEBAR_TYPE, SET_NOTES, SET_SIDEBAR_CONTENT, SET_SIDEBAR_TITLE, SET_SELECTED_CATEGORY } from "./modules/sidebar/types";
-import { setSidebarType, setNotes, setSidebarContent, setSidebarTitle, setSelectedCategory} from "./modules/sidebar/actions";
+import { SET_SIDEBAR_TYPE, SET_NOTES, SET_SIDEBAR_CONTENT, SET_SIDEBAR_TITLE, SET_SELECTED_CATEGORY, SET_CURRENT_PAGE } from "./modules/sidebar/types";
+import { setSidebarType, setNotes, setSidebarContent, setSidebarTitle, setSelectedCategory, setCurrentPage} from "./modules/sidebar/actions";
 
 import { SET_MENU_TYPE } from "./modules/popup/types";
 import { setMenuType } from "./modules/popup/actions";
@@ -27,6 +27,7 @@ export default {
     SET_SIDEBAR_CONTENT: setSidebarContent,
     SET_SIDEBAR_TITLE: setSidebarTitle,
     SET_SELECTED_CATEGORY: setSelectedCategory,
+    SET_CURRENT_PAGE:setCurrentPage,
 
     SET_MENU_TYPE: setMenuType,
 
