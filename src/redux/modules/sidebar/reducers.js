@@ -5,7 +5,9 @@ import {
     SET_SIDEBAR_CONTENT,
     SET_NOTES,
     SET_SELECTED_CATEGORY,
-    SET_CURRENT_PAGE
+    SET_CURRENT_PAGE,
+    DATE_DESC,
+    SET_ORDER_BY
 } from "./types";
 
 const initialState = {
@@ -14,7 +16,8 @@ const initialState = {
     content: null,
     notes: [],
     selectedCategory: null,
-    currentPage: 1
+    currentPage: 1,
+    orderBy: DATE_DESC
 }
 
 export default (state = initialState, action) => {
@@ -48,6 +51,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 currentPage: action.payload.payload
+            }
+        case SET_ORDER_BY:
+            return {
+                ...state,
+                orderBy: action.payload.payload
             }
         default:
             return state;
