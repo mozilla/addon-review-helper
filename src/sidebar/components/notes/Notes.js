@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { setSidebarType, setSidebarTitle, setSidebarContent} from "../../../redux/modules/sidebar/actions"
+import { setSidebarType, setSidebarTitle, setSidebarContent } from "../../../redux/modules/sidebar/actions"
 import { NOTE, DATE_ASC, DATE_DESC, TITLE_ASC, TITLE_DESC } from "../../../redux/modules/sidebar/types"
 import { setNotes } from "../../../redux/modules/sidebar/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -25,7 +25,7 @@ class Notes extends React.Component {
 
     constructor() {
         super();
-        const perPage = 2;
+        const perPage = 10;
         this.state = {
             pageNotes: [],
             perPage,
@@ -33,7 +33,7 @@ class Notes extends React.Component {
             currentPage: 1,
             totalPages: 1,
             orderBy: DATE_DESC,
-            searchBy: null
+            searchBy: null,
         }
     }
 
@@ -47,7 +47,7 @@ class Notes extends React.Component {
             pageNotes,
             totalPages,
             currentPage: 1,
-            currentCount: perPage
+            currentCount: perPage,
         })
     }
 
@@ -87,7 +87,7 @@ class Notes extends React.Component {
                             secondary={this.state.pageNotes[data].content.substring(0, 100)}
                         ></ListItemText>
                         <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete" onClick={this.handleDeleteButton.bind(this, data)}>
+                            <IconButton edge="end" aria-label="delete" onClick={this.handleDeleteButton.bind(this, this.state.pageNotes[data].addon)}>
                                 <DeleteIcon />
                             </IconButton>
                         </ListItemSecondaryAction>
@@ -106,12 +106,40 @@ class Notes extends React.Component {
         this.props.setSidebarType(NOTE);
     }
 
-    handleDeleteButton = (index) => {
+    handleDeleteButton = (addon) => {
         let notes = this.props.notes;
-        delete notes[index];
+        let addonIndex;
+        Object.keys(notes).some((data, index) => {
+            if (notes[index].addon === addon) {
+                addonIndex = index;
+                return true;
+            }
+        })
+        notes.splice(addonIndex, 1);
         sendToBackground(SAVE_TO_STORAGE, { 'notes': _.isEmpty(notes) ? [] : notes })
         this.props.setNotes(_.isEmpty(notes) ? [] : notes);
-        this.props.loadData();
+
+        notes = this.orderNotes(this.state.orderBy);
+        if (this.state.searchBy) {
+            notes = this.searchNotes(notes, this.state.searchBy);
+        }
+        let totalPages = Math.ceil(notes.length / this.state.perPage);
+        let currentPage = this.state.currentPage;
+        if (totalPages < this.state.totalPages) {
+            currentPage--;
+        }
+
+        let results = loadPage(
+            notes,
+            currentPage,
+            this.state.perPage
+        )
+        this.setState({
+            pageNotes: results.pageItems,
+            currentPage,
+            currentCount: results.currentCount,
+            totalPages
+        })
     }
 
     orderNotes = (orderBy) => {
@@ -162,7 +190,6 @@ class Notes extends React.Component {
                 searchBy: null
             })
         }
-        console.log("notes", notes)
         this.loadFirstPage(notes);
     }
 
