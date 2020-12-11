@@ -60,7 +60,6 @@ class Categories extends React.Component {
     componentDidMount = () => {
         this.loadFirstPage(this.props.categories);
 
-
         if (this.props.withAddons) {
             let selectedCategories = [];
             Object.keys(this.props.withAddons).forEach(category => {

@@ -4,8 +4,8 @@ import { CREATE_NOTE, SET_CURRENT_NOTE,  CAN_CREATE_NOTE } from "./modules/notes
 import { SET_TITLE, SET_VERSION, SET_NOTE_EXISTS } from "./modules/currentAddon/types";
 import { setTitle, setVersion, setNoteExists } from "./modules/currentAddon/actions";
 
-import { SET_SIDEBAR_TYPE, SET_NOTES, SET_SIDEBAR_CONTENT, SET_SIDEBAR_TITLE, LOAD_DATA, LOAD_NEW_PAGE, SET_TOTAL_NOTES, SET_ORDER_BY, SET_SEARCH_BY, SET_SELECTED_CATEGORY } from "./modules/sidebar/types";
-import { setSidebarType, setNotes, setSidebarContent, setSidebarTitle, loadData, loadNewPage, setTotalNotes, setOrderBy, setSearchBy, setSelectedCategory} from "./modules/sidebar/actions";
+import { SET_SIDEBAR_TYPE, SET_NOTES, SET_SIDEBAR_CONTENT, SET_SIDEBAR_TITLE, SET_SELECTED_CATEGORY } from "./modules/sidebar/types";
+import { setSidebarType, setNotes, setSidebarContent, setSidebarTitle, setSelectedCategory} from "./modules/sidebar/actions";
 
 import { SET_MENU_TYPE } from "./modules/popup/types";
 import { setMenuType } from "./modules/popup/actions";
@@ -26,11 +26,6 @@ export default {
     SET_SIDEBAR_TYPE: setSidebarType,
     SET_SIDEBAR_CONTENT: setSidebarContent,
     SET_SIDEBAR_TITLE: setSidebarTitle,
-    LOAD_DATA: loadData,
-    LOAD_NEW_PAGE: loadNewPage,
-    SET_TOTAL_NOTES: setTotalNotes,
-    SET_ORDER_BY: setOrderBy,
-    SET_SEARCH_BY: setSearchBy,
     SET_SELECTED_CATEGORY: setSelectedCategory,
 
     SET_MENU_TYPE: setMenuType,
