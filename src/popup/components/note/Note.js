@@ -6,7 +6,7 @@ import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import "./Note.css"
 import { connect } from "react-redux";
 import { createNote, setCurrentNote } from "../../../redux/modules/notes/actions";
-import { setNotes, setTotalNotes } from "../../../redux/modules/sidebar/actions";
+import { setNotes } from "../../../redux/modules/sidebar/actions";
 import { MENU } from "../../../redux/modules/popup/types"
 import { setMenuType } from "../../../redux/modules/popup/actions"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -16,10 +16,6 @@ import _ from "lodash";
 
 
 class Note extends React.Component {
-
-    componentDidMount = () => {
-        //console.log('NOTES', this.props.notes)
-    }
 
     handleSaveNote = () => {
 
@@ -41,8 +37,8 @@ class Note extends React.Component {
                 date: Date.now()
             })
         }
+        notes = _.orderBy(notes, [notes => new Date(notes.date)], "desc");
         sendToBackground(SAVE_TO_STORAGE, { 'notes': notes })
-        this.props.setTotalNotes(Object.keys(notes).length)
         this.props.setNotes(notes);
         this.props.setMenuType(MENU);
     }
@@ -94,7 +90,6 @@ const mapDispatchToProps = {
     createNote,
     setCurrentNote,
     setNotes,
-    setTotalNotes,
     setMenuType
 }
 

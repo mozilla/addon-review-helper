@@ -3,7 +3,7 @@ import { setTitle, setVersion } from "../redux/modules/currentAddon/actions";
 import { SET_TITLE, SET_VERSION, SET_NOTE_EXISTS } from "../redux/modules/currentAddon/types";
 import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/notes/actions";
 import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
-import { setNotes, setTotalNotes } from "../redux/modules/sidebar/actions";
+import { setNotes } from "../redux/modules/sidebar/actions";
 import { setNoteExists } from "../redux/modules/currentAddon/actions";
 import { saveToStorage, checkIfMatches, sendToBackground, checkURLMatches } from "../utils/helpers";
 import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, AMO_URL_MATCHES, AMO_URL_FILTERS, CHECK_WITH_ADDONS, REVIEW_URL_FILTERS, REDIRECT_TO } from "../utils/constants";
@@ -82,15 +82,6 @@ function updateRedux(tabId, url) {
         let notes = browser.storage.local.get('notes');
         notes.then((res) => {
             console.log("NOTES IN STORAGE", res.notes)
-            if (res.notes) {
-                store.dispatch(setTotalNotes({
-                    payload: Object.keys(res.notes).length
-                }))
-            } else {
-                store.dispatch(setTotalNotes({
-                    payload: 0
-                }))
-            }
             store.dispatch(setNotes({
                 payload: res.notes
             }))
