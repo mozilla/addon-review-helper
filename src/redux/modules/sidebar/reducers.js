@@ -7,7 +7,8 @@ import {
     SET_SELECTED_CATEGORY,
     SET_CURRENT_PAGE,
     DATE_DESC,
-    SET_ORDER_BY
+    SET_ORDER_BY,
+    SET_SEARCH_BY
 } from "./types";
 
 const initialState = {
@@ -17,7 +18,8 @@ const initialState = {
     notes: [],
     selectedCategory: null,
     currentPage: 1,
-    orderBy: DATE_DESC
+    orderBy: DATE_DESC,
+    searchBy: null
 }
 
 export default (state = initialState, action) => {
@@ -56,6 +58,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 orderBy: action.payload.payload
+            }
+        case SET_SEARCH_BY:
+            return {
+                ...state,
+                searchBy: action.payload.payload
             }
         default:
             return state;

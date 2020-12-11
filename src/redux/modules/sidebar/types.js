@@ -15,3 +15,4 @@ export const TITLE_DESC = "TITLE_DESC";
 
 export const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
 export const SET_ORDER_BY = "SET_ORDER_BY";
+export const SET_SEARCH_BY = "SET_SEARCH_BY";

@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { setSidebarType, setSidebarTitle, setSidebarContent, setCurrentPage, setOrderBy } from "../../../redux/modules/sidebar/actions"
+import { setSidebarType, setSidebarTitle, setSidebarContent, setCurrentPage, setOrderBy, setSearchBy } from "../../../redux/modules/sidebar/actions"
 import { NOTE, DATE_ASC, DATE_DESC, TITLE_ASC, TITLE_DESC } from "../../../redux/modules/sidebar/types"
 import { setNotes } from "../../../redux/modules/sidebar/actions";
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -25,13 +25,12 @@ class Notes extends React.Component {
 
     constructor() {
         super();
-        const perPage = 2;
+        const perPage = 10;
         this.state = {
             pageNotes: [],
             perPage,
             currentCount: perPage,
-            totalPages: 1,
-            searchBy: null,
+            totalPages: 1
         }
     }
 
@@ -41,6 +40,7 @@ class Notes extends React.Component {
         let pageNotes = loadItems(notes, 0, perPage);
         let totalPages = Math.ceil(totalNotes / perPage);
 
+        this.props.setCurrentPage(1);
         this.setState({
             pageNotes,
             totalPages,
@@ -50,6 +50,9 @@ class Notes extends React.Component {
 
     componentDidMount = () => {
         let notes = this.orderNotes(this.props.orderBy);
+        if (this.props.searchBy) {
+            notes = this.searchNotes(notes, this.props.searchBy)
+        }
         let results = loadPage(notes, this.props.currentPage, this.state.perPage);
         let totalPages = Math.ceil(notes.length / this.state.perPage);
 
@@ -62,8 +65,8 @@ class Notes extends React.Component {
 
     handlePageChange = (event, page) => {
         let notes = this.orderNotes(this.props.orderBy);
-        if (this.state.searchBy) {
-            notes = this.searchNotes(notes, this.state.searchBy)
+        if (this.props.searchBy) {
+            notes = this.searchNotes(notes, this.props.searchBy)
         }
         let results = loadPage(
             notes,
@@ -125,8 +128,8 @@ class Notes extends React.Component {
         this.props.setNotes(_.isEmpty(notes) ? [] : notes);
 
         notes = this.orderNotes(this.props.orderBy);
-        if (this.state.searchBy) {
-            notes = this.searchNotes(notes, this.state.searchBy);
+        if (this.props.searchBy) {
+            notes = this.searchNotes(notes, this.props.searchBy);
         }
         let totalPages = Math.ceil(notes.length / this.state.perPage);
         let currentPage = this.props.currentPage;
@@ -172,8 +175,8 @@ class Notes extends React.Component {
 
     handleOrderByChange = (event) => {
         let notes = this.orderNotes(event.target.value)
-        if (this.state.searchBy) {
-            notes = this.searchNotes(notes, this.state.searchBy)
+        if (this.props.searchBy) {
+            notes = this.searchNotes(notes, this.props.searchBy)
         }
         this.loadFirstPage(notes);
     }
@@ -182,13 +185,9 @@ class Notes extends React.Component {
         let notes = this.orderNotes(this.props.orderBy);
         if (event.target.value.length >= 1) {
             notes = this.searchNotes(notes, event.target.value);
-            this.setState({
-                searchBy: event.target.value
-            })
+            this.props.setSearchBy(event.target.value);
         } else if (event.target.value.length === 0) {
-            this.setState({
-                searchBy: null
-            })
+            this.props.setSearchBy(null);
         }
         this.loadFirstPage(notes);
     }
@@ -224,6 +223,7 @@ class Notes extends React.Component {
                     label="Search"
                     variant="outlined"
                     onChange={this.handleSearchByChange}
+                    defaultValue={this.props.searchBy}
                 />
                 {
                     this.setList()
@@ -240,13 +240,15 @@ const mapDispatchToProps = {
     setSidebarContent,
     setNotes,
     setCurrentPage,
-    setOrderBy
+    setOrderBy,
+    setSearchBy
 }
 
 const mapStateToProps = (state) => ({
     notes: state.sidebar.notes,
     currentPage: state.sidebar.currentPage,
-    orderBy: state.sidebar.orderBy
+    orderBy: state.sidebar.orderBy,
+    searchBy: state.sidebar.searchBy
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notes);
