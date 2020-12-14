@@ -12,7 +12,8 @@ module.exports = {
         'popup': './src/popup/index.js',
         'sidebar': './src/sidebar/index.js',
         'background': './src/background/index.js',
-        'content': "./src/contentScript/index.js"
+        'content': "./src/contentScript/index.js",
+        'options': "./src/options/index.js"
     },
     output: {
         filename: '[name].js',
@@ -97,6 +98,15 @@ module.exports = {
             filename: 'background.html',
             chunks: [
                 'background'
+            ],
+            cache: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'options.html',
+            description: 'options',
+            template: 'src/options/options.html',
+            chunks: [
+                'options'
             ],
             cache: false
         })
