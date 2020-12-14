@@ -64,11 +64,11 @@ module.exports = {
         new CleanTerminalPlugin(),
         new CopyWebpackPlugin({
             patterns: [{
-                    from: './src/manifest_dev.json',
+                    from: './public/manifest_dev.json',
                     to: 'manifest.json'
                 },
                 {
-                    from: './src/img',
+                    from: './public/img',
                     to: 'img'
                 }
             ]

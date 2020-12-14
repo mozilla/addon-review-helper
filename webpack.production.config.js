@@ -61,11 +61,11 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [{
-                    from: './src/manifest.json',
+                    from: './public/manifest.json',
                     to: ''
                 },
                 {
-                    from: './src/img',
+                    from: './public/img',
                     to: 'img'
                 }
             ]

@@ -6,18 +6,18 @@
   "version": "0.0.1",
 
   "icons": {
-    "16": "img/logo-small.png",
-    "48": "img/logo-small.png",
-    "128": "img/logo-small.png"
+    "16": "img/logo.svg",
+    "48": "img/logo.svg",
+    "128": "img/logo.svg"
   },
 
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "img/logo-small.png"
+    "default_icon": "img/logo.svg"
   },
 
   "sidebar_action": {
-    "default_icon": "img/logo-small.png",
+    "default_icon": "img/logo.svg",
     "default_panel": "sidebar.html",
     "open_at_install": false
   },
@@ -88,7 +88,6 @@
 
   "options_ui": {
     "page": "options.html"
-  },
+  }
 
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self' 'unsafe-eval'"
 }
