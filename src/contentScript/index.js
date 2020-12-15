@@ -1,7 +1,7 @@
 import getTitle from "./title";
 import { getLastVersion } from "./versions";
-import { UPDATE_REDUX, CHECK_WITH_ADDONS } from "../utils/constants";
-import { sendToBackground } from "../utils/helpers";
+import { UPDATE_REDUX, CHECK_WITH_ADDONS, REVIEW_URL_FILTERS, REDIRECT_TO} from "../utils/constants";
+import { sendToBackground, checkURLMatches } from "../utils/helpers";
 import { SET_CURRENT_NOTE, } from "../redux/modules/notes/types";
 import { SET_NOTE_EXISTS } from "../redux/modules/currentAddon/types";
 import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types"
@@ -11,7 +11,7 @@ console.log('!!!!! Content scripts has loaded !!!!!');
 
 browser.runtime.onMessage.addListener(handleMessages);
 
-
+let keysPressed = {};
 
 function handleMessages(message) {
     switch (message.type) {
@@ -89,4 +89,19 @@ function handleMessages(message) {
         //do nothing
     }
 }
+
+document.addEventListener('keydown', event => {
+    let pageURL = window.location.href;
+    keysPressed[event.key] = true;
+    
+    if(keysPressed['Shift'] && event.key === 'R' && checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)],pageURL)) {
+        pageURL = pageURL.replace(`/review-${REDIRECT_TO.content}/`, '/review/');
+        window.location.href = pageURL;
+    } else if(keysPressed['Shift'] && event.key === 'C' && checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], pageURL)) {   
+        pageURL = pageURL.replace('/review/', `/review-${REDIRECT_TO.content}/`)
+        .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
+        .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
+        window.location.href = pageURL;
+    }
+});
 
