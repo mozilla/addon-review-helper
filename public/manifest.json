@@ -82,7 +82,12 @@
     "https://reviewers.addons.mozilla.org/*",
     "https://reviewers.addons.allizom.org/*",
     "storage",
-    "contextMenus"
-  ]
+    "contextMenus",
+    "downloads"
+  ],
+
+  "options_ui": {
+    "page": "options.html"
+  }
 
 }
