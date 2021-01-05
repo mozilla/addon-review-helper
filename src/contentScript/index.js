@@ -93,11 +93,11 @@ function handleMessages(message) {
 document.addEventListener('keydown', event => {
     let pageURL = window.location.href;
     keysPressed[event.key] = true;
-    
-    if(keysPressed['Shift'] && event.key === 'R' && checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)],pageURL)) {
+
+    if(keysPressed['Alt'] && keysPressed['Shift'] && event.key === 'R' && checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)],pageURL)) {
         pageURL = pageURL.replace(`/review-${REDIRECT_TO.content}/`, '/review/');
         window.location.href = pageURL;
-    } else if(keysPressed['Shift'] && event.key === 'C' && checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], pageURL)) {   
+    } else if(keysPressed['Alt'] && keysPressed['Shift'] && event.key === 'C' && checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], pageURL)) {   
         pageURL = pageURL.replace('/review/', `/review-${REDIRECT_TO.content}/`)
         .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
         .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
