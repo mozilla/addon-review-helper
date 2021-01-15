@@ -78,12 +78,12 @@ class CurrentAddon extends React.Component {
                                         renderValue={(selected) => selected.join(', ')}
                                         style={{ width: '100%' }}
                                     >
-                                        {this.props.allCategories.map((category) => (
-                                            <MenuItem key={category} value={category} style={{ width: '100%' }} >
+                                        {this.props.allCategories.map((category, index) => (
+                                            <MenuItem key={index} value={category.name} style={{ width: '100%' }} >
                                                 <Checkbox
-                                                    checked={this.props.selectedCategories.indexOf(category) > -1}
+                                                    checked={this.props.selectedCategories.indexOf(category.name) > -1}
                                                 />
-                                                <ListItemText primary={category} />
+                                                <ListItemText primary={category.name} />
                                             </MenuItem>
                                         ))}
                                     </Select>

@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import "./Categories.css";
 import Grid from '@material-ui/core/Grid';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
-import { setCurrentCategory, setCategories, setEditIndex, setSelectedCategories } from "../../../redux/modules/categories/actions"
+import { setCurrentCategory, setCategories, setEditIndex, setSelectedCategories, setWithAddons } from "../../../redux/modules/categories/actions"
 import { setMenuType } from "../../../redux/modules/popup/actions"
 import { MENU } from "../../../redux/modules/popup/types"
 import { SAVE_TO_STORAGE } from "../../../utils/constants";
@@ -18,7 +18,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import _ from "lodash";
+import _, { indexOf } from "lodash";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Pagination from '@material-ui/lab/Pagination';
 import CurrentAddon from "./CurrentAddon";
@@ -26,7 +26,12 @@ import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { setSidebarType, setSelectedCategory } from "../../../redux/modules/sidebar/actions";
 import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
 import { loadPage, loadItems } from "../../../utils/helpers";
+import { SketchPicker } from 'react-color';
+import reactCSS from 'reactcss'
 
+function random_color() {
+    return Math.floor(Math.random() * 16777215).toString(16);
+}
 class Categories extends React.Component {
 
     constructor() {
@@ -38,8 +43,43 @@ class Categories extends React.Component {
             currentCount: perPage,
             totalCategories: null,
             currentPage: 1,
-            totalPages: 1
+            totalPages: 1,
+            displayColorPicker: false,
+            categoryToChange: null
+            
         }
+    }
+
+    handleChangeColorClick = (category, color) => {
+        this.setState({ 
+            categoryToChange: category,
+            color: color,
+            displayColorPicker: !this.state.displayColorPicker 
+        })
+    };
+
+    handleClose = () => {
+        this.setState({ displayColorPicker: false })
+    };
+
+    handleChange = (color) => {
+        console.log("ON CHANGE")
+        this.setState({ color: color.hex })
+    };
+
+    handleChangeColorComplete = (color, event) => {
+        console.log("COMPLETE CHANGE")
+        let categories = this.props.categories;
+        categories.forEach(category => {
+            if (category.name === this.state.categoryToChange) {
+                category.color = color.hex
+            }
+        })
+       
+        this.props.setCategories(categories);
+        sendToBackground(SAVE_TO_STORAGE, { 'categories': categories })
+        this.setState({ color: color.hex })
+        this.handlePageChange(null, this.state.currentPage);
     }
 
     loadFirstPage = (categories) => {
@@ -80,13 +120,16 @@ class Categories extends React.Component {
             var categories = this.props.categories ?? [];
 
             if (_.isNumber(this.props.editIndex)) {
-                categories[this.props.editIndex] = this.props.currentCategory;
+                categories[this.props.editIndex].name = this.props.currentCategory;
                 this.props.setEditIndex(null);
             } else {
-                categories.push(this.props.currentCategory);
+                categories.push({
+                    name: this.props.currentCategory,
+                    color: '#' + random_color()
+                });
             }
 
-            categories = categories.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+            categories = categories.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
             this.props.setCategories(categories);
             sendToBackground(SAVE_TO_STORAGE, { 'categories': categories })
             this.props.setCurrentCategory('')
@@ -98,9 +141,22 @@ class Categories extends React.Component {
         }
     }
 
-    handleDelete = (category) => {
-        var categories = this.props.categories;
-        categories.splice(categories.indexOf(category), 1)
+    handleDelete = (name) => {
+        let categories = this.props.categories;
+        let indexOfCategory;
+        categories.forEach((category, index) => {
+            if (category.name === name) {
+                indexOfCategory = index;
+            }
+        });
+        //delete from withAddons
+        if (this.props.withAddons[name]) {
+            let withAddons = this.props.withAddons;
+            delete withAddons[name];
+            this.props.setWithAddons(withAddons);
+            sendToBackground(SAVE_TO_STORAGE, { 'withAddons': withAddons });
+        }
+        categories.splice(indexOfCategory, 1)
         var newCategories = _.isEmpty(categories) ? [] : categories;
         sendToBackground(SAVE_TO_STORAGE, { 'categories': newCategories })
         this.props.setCategories(newCategories);
@@ -108,10 +164,13 @@ class Categories extends React.Component {
 
     }
 
-    handleEdit = (category) => {
-        var index = this.props.categories.indexOf(category);
-        this.props.setCurrentCategory(category);
-        this.props.setEditIndex(index);
+    handleEdit = (name) => {
+        let indexOfCategory;
+        this.props.categories.some((category, index) => {
+            indexOfCategory = index;
+        })
+        this.props.setCurrentCategory(name);
+        this.props.setEditIndex(indexOfCategory);
     }
 
     handleBackButton = () => {
@@ -138,14 +197,38 @@ class Categories extends React.Component {
         }
     }
 
-    handleList = (index) => {
+    handleList = (name) => {
         browser.sidebarAction.close()
-        this.props.setSelectedCategory(this.props.categories[index])
+        this.props.setSelectedCategory(name)
         this.props.setSidebarType(CATEGORY_ADDONS);
         browser.sidebarAction.open()
     }
 
     render() {
+        const styles = reactCSS({
+            'default': {
+                swatch: {
+                    padding: '5px',
+                    background: '#fff',
+                    borderRadius: '1px',
+                    boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+                    display: 'inline-block',
+                    cursor: 'pointer',
+                },
+                popover: {
+                    position: 'absolute',
+                    zIndex: '2',
+                },
+                cover: {
+                    position: 'fixed',
+                    top: '0px',
+                    right: '0px',
+                    bottom: '0px',
+                    left: '0px',
+                },
+            },
+        });
+
         return (
             <div className="categories-div">
                 <Grid container spacing={3}>
@@ -186,6 +269,7 @@ class Categories extends React.Component {
                     {this.props.isReview ? <CurrentAddon /> : ''}
 
                     <Grid item xs={12}>
+
                         <TableContainer >
                             <Table aria-label="simple table">
                                 <TableHead>
@@ -195,29 +279,43 @@ class Categories extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+                                    {
+                                    this.state.displayColorPicker ? <div style={styles.popover}>
+                                        <div style={styles.cover} onClick={this.handleClose} />
+                                            <SketchPicker color={this.state.color} onChange={this.handleChange} onChangeComplete={this.handleChangeColorComplete} />
+                                        </div>
+                                     : null
+                                     }
                                     {this.state.pageCategories && this.state.pageCategories.map((category, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
-                                                {category}
+                                                {category.name}
                                             </TableCell>
                                             <TableCell align="right">
+                                                <Button variant="contained" style={{
+                                                    background: category.color
+                                                }} onClick={this.handleChangeColorClick.bind(this, category.name, category.color)}>
+                                                    Change Color
+                                                </Button>
+
                                                 <Button variant="contained" style={{ marginRight: "10px" }} startIcon={<DeleteForeverOutlinedIcon />}
-                                                    onClick={this.handleDelete.bind(this, category)}
+                                                    onClick={this.handleDelete.bind(this, category.name)}
                                                 >
                                                     Delete</Button>
                                                 {
-                                                    this.props.withAddons && category in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
-                                                        onClick={this.handleList.bind(this, index)}
+                                                    this.props.withAddons && category.name in this.props.withAddons && <Button variant="contained" color="secondary" style={{ marginRight: "10px" }} startIcon={<VisibilityOutlinedIcon />}
+                                                        onClick={this.handleList.bind(this, category.name)}
                                                     >
                                                         View add-ons
                                                         </Button>
                                                 }
 
                                                 <Button variant="contained" color="primary" startIcon={<EditOutlinedIcon />}
-                                                    onClick={this.handleEdit.bind(this, category)}
+                                                    onClick={this.handleEdit.bind(this, category.name)}
                                                 >
                                                     Edit
                                                 </Button>
+
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -239,7 +337,8 @@ const mapDispatchToProps = {
     setEditIndex,
     setSelectedCategories,
     setSidebarType,
-    setSelectedCategory
+    setSelectedCategory,
+    setWithAddons
 }
 
 const mapStateToProps = (state) => ({
