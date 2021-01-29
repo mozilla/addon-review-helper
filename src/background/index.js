@@ -97,9 +97,11 @@ function updateRedux(tabId, url) {
         /**
          * Categories
          */
+        let allCategories;
         let categories = browser.storage.local.get('categories');
         categories.then((res) => {
             console.log("CATEGORIES: ", res.categories)
+            allCategories = res.categories;
             if (res.categories) {
                 store.dispatch(setCategories({
                     payload: res.categories
@@ -121,7 +123,8 @@ function updateRedux(tabId, url) {
                     {
                         type: CHECK_WITH_ADDONS,
                         withAddons: res.withAddons,
-                        isReview
+                        isReview,
+                        categories: allCategories
                     }
                 )
             }
