@@ -1,0 +1,46 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #fefefe;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 90%;
+  margin: 50px auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.card {
+  width: 20%;
+  background: linear-gradient(to right, #ff416c, #ff4b2f);
+  border: 2px solid black;
+  border-radius: 20px;
+  margin: 20px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px -10px rgba(0 0 0 0.24);
+}
+
+.card-title {
+  text-align: center;
+  padding: 10px 10px 400px 10px;
+  color: #fff;
+}
