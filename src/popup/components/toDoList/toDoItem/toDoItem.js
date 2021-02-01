@@ -6,7 +6,7 @@ import AddOnItem from '../addOnItem/addOnItem';
 
 import './toDoItem.css';
 
-const ToDoItem = ({ item, list, onSubmit }) => {
+const ToDoItem = ({ item, list, onSubmit, removeItem }) => {
     const [isShown, setIsShown] = useState(false);
 
     console.log('item list', list);
@@ -34,6 +34,12 @@ const ToDoItem = ({ item, list, onSubmit }) => {
     return (
         <>
             <div className="card">
+                <div 
+                    className="close"
+                    disabled={list.length!==0}
+                    onClick={removeItem}
+                > 
+                </div>
                 <div className="card-container">
                     <div className="card-title">
                         {item}
@@ -45,8 +51,6 @@ const ToDoItem = ({ item, list, onSubmit }) => {
                 {isShown ? (
                     <Modal
                         onSubmit={onSubmit}
-                        modalRef={(n) => (console.log('modalRef', n))}
-                        buttonRef={(n) => (console.log('buttonRef', n))}
                         closeModal={closeModal}
                         onClickOutside={onClickOutside}
                     />) : (

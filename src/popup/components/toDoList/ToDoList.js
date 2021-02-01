@@ -4,9 +4,9 @@ import ToDoItem from './toDoItem/toDoItem';
 
 import { connect } from 'react-redux';
 
-import {addItem, addAddon} from '../../../redux/modules/toDoList/actions.js';
+import {addItem, addAddon, removeItem} from '../../../redux/modules/toDoList/actions.js';
 
-const ToDoList = ({toDoList, addItem, addAddon}) => {
+const ToDoList = ({toDoList, addItem, addAddon, removeItem}) => {
     let input;
     // const [categories, setCategories] = useState(toDoList);
     // const addItem = item => setCategories([...categories, item]);
@@ -18,9 +18,14 @@ const ToDoList = ({toDoList, addItem, addAddon}) => {
         console.log(event.target, key);
         console.log(event.target.name.value);
         console.log(event.target.url.value);
-        // addAddon({name: event.target.name.value, url: event.target.url.value, key: Date.now}, key);
-        addAddon({name: event.target.name.value, url: 'abc', key: Date.now()}, key);
+        addAddon({name: event.target.name.value, url: event.target.url.value, key: Date.now()}, key);
     };
+
+    const onClose = (key) => {
+        console.log('x button was clicked', key);    
+        removeItem(key);
+
+    }
 
     return (
         <>
@@ -44,7 +49,8 @@ const ToDoList = ({toDoList, addItem, addAddon}) => {
                             key={`categories${category.key}`} 
                             item={category.text} 
                             list={category.addOnList}
-                            onSubmit={(event) => onSubmit(event, category.key)}
+                            onSubmit={event => onSubmit(event, category.key)}
+                            removeItem={() => onClose(category.key)}
                             />))}
                 </div>    
                  
@@ -62,7 +68,8 @@ const mapDispatchToProps = dispatch => {
 
     return {
         addItem: input => dispatch(addItem(input)),
-        addAddon: (input, key) => dispatch(addAddon(input, key))
+        addAddon: (input, key) => dispatch(addAddon(input, key)),
+        removeItem: key => dispatch(removeItem(key)),
     }
 };
 

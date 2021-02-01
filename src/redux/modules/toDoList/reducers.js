@@ -1,5 +1,6 @@
 import {
     ADD_ITEM,
+    REMOVE_ITEM,
     ADD_ADDON,
 } from './types';
 
@@ -24,12 +25,22 @@ export default (state = initialState, action) => {
                 }
                 return item;
             });
-
+    
             return {
                     ...state,
                     toDoList: dictionary
-            } 
-                
+            }
+
+        case REMOVE_ITEM:
+            console.log('action remove item', action);
+            return {
+                ...state,
+                toDoList: [...state.toDoList.filter(item => {
+                    return item.key!==action.key.key
+                })]
+            }    
+
+            
         default:
             return state
     }

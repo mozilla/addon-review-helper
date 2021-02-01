@@ -1,6 +1,7 @@
 import {
     ADD_ITEM,
     ADD_ADDON,
+    REMOVE_ITEM,
 } from './types';
 
 export function addItem(payload) {
@@ -15,5 +16,12 @@ export function addAddon(payload, key) {
         type: ADD_ADDON,
         payload,
         key,
+    }
+};
+
+export function removeItem(key) {
+    return {
+        type: REMOVE_ITEM,
+        key
     }
 };
