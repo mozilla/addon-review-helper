@@ -5,7 +5,7 @@ import FocusTrap from 'focus-trap-react';
 
 import './modal.css';
 
-export const Modal = ({ onClickOutside, modalRef, buttonRef, closeModal,onSubmit}) => {
+export const Modal = ({ onClickOutside, closeModal,onSubmit, nameValue, urlValue, handleNameChange, handleUrlChange}) => {
     
     return (
     <FocusTrap>
@@ -29,7 +29,13 @@ export const Modal = ({ onClickOutside, modalRef, buttonRef, closeModal,onSubmit
                     </span>
                 </button>
                 <div className="modal-body">
-                    <Form onSubmit={onSubmit} />
+                    <Form 
+                        onSubmit={onSubmit} 
+                        nameValue={nameValue}
+                        urlValue={urlValue}
+                        handleNameChange={handleNameChange}
+                        handleUrlChange={handleUrlChange}
+                    />
                 </div>
             </div>
         </aside>

@@ -1,7 +1,9 @@
+import { add } from 'lodash';
 import {
     ADD_ITEM,
     REMOVE_ITEM,
     ADD_ADDON,
+    EDIT_ITEM,
 } from './types';
 
 const initialState = {
@@ -32,14 +34,29 @@ export default (state = initialState, action) => {
             }
 
         case REMOVE_ITEM:
-            console.log('action remove item', action);
             return {
                 ...state,
                 toDoList: [...state.toDoList.filter(item => {
                     return item.key!==action.key.key
                 })]
-            }    
+            }
 
+        case EDIT_ITEM:
+            return {    
+                ...state,
+                toDoList: [...state.toDoList.map(item => {
+                if (item.key===action.payload.key) {
+                     item.addOnList.map(addOn=> {
+                         if(addOn.key===action.payload.payload.key) {
+                            addOn.name = action.payload.payload.name;
+                            addOn.url = action.payload.payload.url;
+                         }
+                         return addOn;   
+                     })
+                }
+                return item;
+            })]
+        }
             
         default:
             return state

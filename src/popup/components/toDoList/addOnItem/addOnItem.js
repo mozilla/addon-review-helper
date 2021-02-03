@@ -2,10 +2,10 @@ import React from 'react';
 
 import './addOnItem.css';
 
-const AddOnItem = ({text}) => {
+const AddOnItem = ({text, onClick}) => {
     return (
         
-          <div className="addon-item">
+          <div className="addon-item" onClick={onClick}>
               {text}
           </div>
     );

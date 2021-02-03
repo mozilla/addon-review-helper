@@ -4,9 +4,9 @@ import ToDoItem from './toDoItem/toDoItem';
 
 import { connect } from 'react-redux';
 
-import {addItem, addAddon, removeItem} from '../../../redux/modules/toDoList/actions.js';
+import {addItem, addAddon, removeItem, editItem} from '../../../redux/modules/toDoList/actions.js';
 
-const ToDoList = ({toDoList, addItem, addAddon, removeItem}) => {
+const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem}) => {
     let input;
     // const [categories, setCategories] = useState(toDoList);
     // const addItem = item => setCategories([...categories, item]);
@@ -15,17 +15,15 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem}) => {
 
     const onSubmit = (event, key) => {
         event.preventDefault(event);
-        console.log(event.target, key);
-        console.log(event.target.name.value);
-        console.log(event.target.url.value);
         addAddon({name: event.target.name.value, url: event.target.url.value, key: Date.now()}, key);
     };
 
-    const onClose = (key) => {
-        console.log('x button was clicked', key);    
-        removeItem(key);
+    const onEdit = (event, itemKey, key) => {
+        event.preventDefault(event);
+        editItem({name: event.target.name.value, url: event.target.url.value, key: itemKey}, key)
+    };
 
-    }
+    const onClose = key => removeItem(key);
 
     return (
         <>
@@ -51,7 +49,8 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem}) => {
                             list={category.addOnList}
                             onSubmit={event => onSubmit(event, category.key)}
                             removeItem={() => onClose(category.key)}
-                            />))}
+                            editItem={(event, itemKey)=> onEdit(event, itemKey, category.key)}
+                        />))}
                 </div>    
                  
             </div>
@@ -70,6 +69,7 @@ const mapDispatchToProps = dispatch => {
         addItem: input => dispatch(addItem(input)),
         addAddon: (input, key) => dispatch(addAddon(input, key)),
         removeItem: key => dispatch(removeItem(key)),
+        editItem: (input, key) => dispatch(editItem(input, key)),
     }
 };
 
