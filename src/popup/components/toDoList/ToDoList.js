@@ -4,9 +4,9 @@ import ToDoItem from './toDoItem/toDoItem';
 
 import { connect } from 'react-redux';
 
-import {addItem, addAddon, removeItem, editItem} from '../../../redux/modules/toDoList/actions.js';
+import {addItem, addAddon, removeItem, editItem, removeAddon} from '../../../redux/modules/toDoList/actions.js';
 
-const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem}) => {
+const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem, removeAddon}) => {
     let input;
     // const [categories, setCategories] = useState(toDoList);
     // const addItem = item => setCategories([...categories, item]);
@@ -20,7 +20,12 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem}) => {
 
     const onEdit = (event, itemKey, key) => {
         event.preventDefault(event);
-        editItem({name: event.target.name.value, url: event.target.url.value, key: itemKey}, key)
+        editItem({name: event.target.name.value, url: event.target.url.value, key: itemKey}, key);
+    };
+
+    const onRemove = (itemKey, key) => {
+        /// event.preventDefault(event);
+        removeAddon({key: itemKey}, key);
     };
 
     const onClose = key => removeItem(key);
@@ -50,6 +55,7 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem}) => {
                             onSubmit={event => onSubmit(event, category.key)}
                             removeItem={() => onClose(category.key)}
                             editItem={(event, itemKey)=> onEdit(event, itemKey, category.key)}
+                            removeAddon={(itemKey)=> onRemove(itemKey, category.key)}
                         />))}
                 </div>    
                  
@@ -70,6 +76,7 @@ const mapDispatchToProps = dispatch => {
         addAddon: (input, key) => dispatch(addAddon(input, key)),
         removeItem: key => dispatch(removeItem(key)),
         editItem: (input, key) => dispatch(editItem(input, key)),
+        removeAddon: (input, key) => dispatch(removeAddon(input, key)),
     }
 };
 

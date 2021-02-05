@@ -13,8 +13,8 @@ import { setMenuType } from "./modules/popup/actions";
 import { SET_CATEGORIES, SET_CURRENT_CATEGORY, SET_EDIT_INDEX, SET_SELECTED_CATEGORIES, SET_WITH_ADDONS } from "./modules/categories/types";
 import { setCategories, setCurrentCategory, setEditIndex,  setSelectedCategories, setWithAddons } from "./modules/categories/actions";
 
-import { addAddon, addItem, editItem, removeItem } from "./modules/toDoList/actions"
-import { ADD_ITEM, ADD_ADDON, REMOVE_ITEM, EDIT_ITEM } from "./modules/toDoList/types";
+import { addAddon, addItem, editItem, removeItem, removeAddon } from "./modules/toDoList/actions"
+import { ADD_ITEM, ADD_ADDON, REMOVE_ITEM, EDIT_ITEM, REMOVE_ADDON } from "./modules/toDoList/types";
 
 export default {
     CREATE_NOTE: createNote,
@@ -46,5 +46,6 @@ export default {
     REMOVE_ITEM: removeItem,
     ADD_ADDON: addAddon,
     EDIT_ITEM: editItem,
+    REMOVE_ADDON: removeAddon,
     
 }

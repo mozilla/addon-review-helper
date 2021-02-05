@@ -4,6 +4,7 @@ import {
     REMOVE_ITEM,
     ADD_ADDON,
     EDIT_ITEM,
+    REMOVE_ADDON,
 } from './types';
 
 const initialState = {
@@ -14,12 +15,11 @@ export default (state = initialState, action) => {
     
     switch (action.type) {
         case ADD_ITEM:
-            console.log('action - payload', action.payload.payload);
-
             return {
                 ...state,
                 toDoList: [...state.toDoList, action.payload.payload]
             }
+            
         case ADD_ADDON:
             const dictionary = state.toDoList.map(item => {
                 if(item.key===action.payload.key) {
@@ -53,6 +53,21 @@ export default (state = initialState, action) => {
                          }
                          return addOn;   
                      })
+                }
+                return item;
+            })]
+        }
+
+        case REMOVE_ADDON:
+            return {    
+                ...state,
+                toDoList: [...state.toDoList.map(item => {
+                if (item.key===action.payload.key) {
+                     item.addOnList = item.addOnList.filter(addOn=> {
+                         console.log(addOn.key===action.payload.payload.key, 'addOn', addOn, 'action.payload.payload', action.payload.payload);
+                         return addOn.key!==action.payload.payload.key;   
+                     })
+                     
                 }
                 return item;
             })]

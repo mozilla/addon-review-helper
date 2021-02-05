@@ -3,6 +3,7 @@ import {
     ADD_ADDON,
     REMOVE_ITEM,
     EDIT_ITEM,
+    REMOVE_ADDON,
 } from './types';
 
 export function addItem(payload) {
@@ -30,6 +31,14 @@ export function removeItem(key) {
 export function editItem(payload, key) {
     return {
         type: EDIT_ITEM,
+        payload,
+        key,
+    }
+};
+
+export function removeAddon(payload, key) {
+    return {
+        type: REMOVE_ADDON,
         payload,
         key,
     }

@@ -6,7 +6,7 @@ import AddOnItem from '../addOnItem/addOnItem';
 
 import './toDoItem.css';
 
-const ToDoItem = ({ item, list, onSubmit, removeItem, editItem }) => {
+const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) => {
     const [isShown, setIsShown] = useState(false);
     const [isListed, setIsListed] = useState(false);
     const [inputName, setInputName] = useState('');
@@ -65,6 +65,11 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem }) => {
         console.log('handle on Edit input name', inputName);
     };
 
+    const handleOnRemove = key => {
+        console.log('Remove Item was clicked');
+        removeAddon(key, inputKey);
+    };
+
     return (
         <>
             <div className="card">
@@ -83,6 +88,7 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem }) => {
                                                 text={addOn.name} 
                                                 key={`addOn${addOn.key}`} 
                                                 onClick={() => handleOnClick(addOn.name, addOn.url, addOn.key)}
+                                                removeAddon={()=>handleOnRemove(addOn.key)}
                                                 />)}
                     </div>
                 </div>
