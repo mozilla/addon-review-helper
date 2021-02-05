@@ -8,10 +8,6 @@ import {addItem, addAddon, removeItem, editItem, removeAddon} from '../../../red
 
 const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem, removeAddon}) => {
     let input;
-    // const [categories, setCategories] = useState(toDoList);
-    // const addItem = item => setCategories([...categories, item]);
-    console.log('toDoList', toDoList)
-
 
     const onSubmit = (event, key) => {
         event.preventDefault(event);
@@ -23,10 +19,7 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem, removeAddo
         editItem({name: event.target.name.value, url: event.target.url.value, key: itemKey}, key);
     };
 
-    const onRemove = (itemKey, key) => {
-        /// event.preventDefault(event);
-        removeAddon({key: itemKey}, key);
-    };
+    const onRemove = (itemKey, key) => removeAddon({key: itemKey}, key);
 
     const onClose = key => removeItem(key);
 
@@ -38,7 +31,10 @@ const ToDoList = ({toDoList, addItem, addAddon, removeItem, editItem, removeAddo
                 <input
                     type="text"
                     ref={node => {input = node;}}
-                    placeholder=" Add a category here " />
+                    placeholder=" Add a category here "
+                    className="inputClass"    
+                />
+                    
                 <button className="btn" type="submit" onClick={event => {
                     input.value!=='' && addItem({text: input.value, key: Date.now(), edit: false, addOnList: []});
                     input.value='';

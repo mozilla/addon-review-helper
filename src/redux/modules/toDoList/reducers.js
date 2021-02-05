@@ -1,4 +1,3 @@
-import { add } from 'lodash';
 import {
     ADD_ITEM,
     REMOVE_ITEM,
@@ -64,7 +63,6 @@ export default (state = initialState, action) => {
                 toDoList: [...state.toDoList.map(item => {
                 if (item.key===action.payload.key) {
                      item.addOnList = item.addOnList.filter(addOn=> {
-                         console.log(addOn.key===action.payload.payload.key, 'addOn', addOn, 'action.payload.payload', action.payload.payload);
                          return addOn.key!==action.payload.payload.key;   
                      })
                      

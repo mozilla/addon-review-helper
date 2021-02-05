@@ -25,9 +25,7 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
         })
     };
 
-    const showModal = () => {
-        setIsShown(true);
-    };
+    const showModal = () => setIsShown(true);
 
     const closeModal = () => {
         setIsShown(false);
@@ -41,14 +39,12 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
     };
 
     const onClickOutside = event => {
-        console.log('event on click outside', event.currentTarget.localName, event.target);
         if (event.currentTarget && event.currentTarget.localName === "aside") return;
 
         closeModal();
     };
 
     const handleOnSubmit = (event) => {
-        console.log('handle on submit button was clicked');
         onSubmit(event);
         closeModal();
     };
@@ -59,7 +55,6 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
         setInputName(name);
         setInputURL(url);
         setInputKey(key);
-        console.log(name, url);
     };
 
     const handleChangeName = event => {
@@ -74,13 +69,9 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
         editItem(event, inputKey);
         closeModal();
         setIsListed(false);
-        console.log('handle on Edit input name', inputName);
     };
 
-    const handleOnRemove = key => {
-        console.log('Remove Item was clicked');
-        removeAddon(key, inputKey);
-    };
+    const handleOnRemove = key => removeAddon(key, inputKey);
 
     useEffect(() => {
         fetchURL();
