@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import AddButton from '../addButton/addButton';
 import Modal from '../modal/modal';
 import AddOnItem from '../addOnItem/addOnItem';
+import { REVIEW_STATE } from '../../../../utils/constants';
 
 import './toDoItem.css';
 
@@ -13,9 +14,20 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
     const [inputURL, setInputURL] = useState('');
     const [inputKey, setInputKey] = useState(null);
 
+    const fetchURL = () => {
+        REVIEW_STATE.map(index => {
+            if(inputURL.indexOf(index)!==-1) {
+                let [, nameUpdate] = inputURL.split(index);
+                
+                nameUpdate = nameUpdate.split('-').map(index => index.toUpperCase()[0]+index.slice(1)).join(' ');
+                setInputName(nameUpdate);
+            }
+        })
+    };
+
     const showModal = () => {
         setIsShown(true);
-    }
+    };
 
     const closeModal = () => {
         setIsShown(false);
@@ -56,7 +68,7 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
 
     const handleChangeUrl = event => {
         setInputURL(event.target.value);
-    }
+    };
 
     const handleOnEdit = event => {
         editItem(event, inputKey);
@@ -69,6 +81,10 @@ const ToDoItem = ({ item, list, onSubmit, removeItem, editItem, removeAddon }) =
         console.log('Remove Item was clicked');
         removeAddon(key, inputKey);
     };
+
+    useEffect(() => {
+        fetchURL();
+    }, [inputURL]);
 
     return (
         <>
