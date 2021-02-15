@@ -13,9 +13,6 @@ import './addAddon.css';
 const AddAddon = ({toDoList, addAddon}) => {
       const [anchorEl, setAnchorEl] = useState(null);
 
-      console.log(toDoList, 'toDoList');
-      console.log('location', window.location.href);
-
       const handleClick = event => setAnchorEl(event.currentTarget);
 
       const handleClose = () => setAnchorEl(null);
@@ -23,10 +20,10 @@ const AddAddon = ({toDoList, addAddon}) => {
       const handleClickItem = async (key) => {
             const url = await getCurrentURL();
             const namefromURL =  getNameFromURL(url);
-            console.log('get name from url', namefromURL);
+      
             addAddon({name: namefromURL, url: url, key: Date.now()}, key);
 
-           handleClose();
+            handleClose();
       }
 
       return (
