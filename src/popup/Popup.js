@@ -7,6 +7,7 @@ import {MENU, NOTE, CATEGORIES} from "../redux/modules/popup/types";
 import Menu from "./components/menu/Menu";
 import Note from "./components/note/Note";
 import Categories from "./components/categories/Categories";
+import AddAddon from "./components/addAddon/addAddon";
 
 class Popup extends Component {
 
@@ -21,7 +22,7 @@ class Popup extends Component {
             default:
                 break;
         }
-       
+      
     }
 }
 

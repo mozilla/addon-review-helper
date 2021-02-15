@@ -23,6 +23,9 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
 import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
 import ToDoListOutlinedIcon from '@material-ui/icons/ListAlt';
+import AddAddon from "../addAddon/addAddon";
+
+
 class Menu extends React.Component {
 
     openToDoList() {
@@ -84,6 +87,7 @@ class Menu extends React.Component {
                         <BottomNavigationAction label="Bugs" value="bugs" icon={<BugReportOutlinedIcon />} />
                         <BottomNavigationAction label="ToDoList" value="todolist" icon={<ToDoListOutlinedIcon />} />
                     </BottomNavigation>
+                    <AddAddon />
                     <MenuList>
                         {/* <MenuItem onClick={this.openToDoList} disabled={true}><DoneAllIcon />  To-do List</MenuItem> */}
                         <MenuItem onClick={this.openCategories}><ListIcon /> Categories</MenuItem>

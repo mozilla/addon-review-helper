@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './ToDoList.css';
 import ToDoItem from './toDoItem/toDoItem';
 
