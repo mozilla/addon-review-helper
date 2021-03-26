@@ -14,6 +14,7 @@ import { setCategories, setWithAddons, setSelectedCategories } from "../redux/mo
 import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types";
 console.log('Background.js file loaded');
 
+const MESAJ_TEXT="MESAJ_TEXT";
 
 browser.runtime.onMessage.addListener(handleMessages);
 
@@ -48,6 +49,8 @@ function handleMessages(message) {
                 payload: message.payload
             }))
             break;
+        case MESAJ_TEXT:
+            console.log('message payload', message.payload);
         default:
         //do nothing
     }

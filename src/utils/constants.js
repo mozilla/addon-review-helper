@@ -52,3 +52,11 @@ export const REDIRECT_TO = {
     listed: "listed",
     unlisted: "unlisted",
 }
+
+export const REVIEW_STATE = [
+    "/review/",
+    "/review-listed/",
+    "/review-unlisted/",
+    "/review-content/",
+]
+ 

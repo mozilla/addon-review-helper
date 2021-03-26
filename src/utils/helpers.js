@@ -1,3 +1,5 @@
+import { REVIEW_STATE } from './constants';
+
 export function saveToStorage(content){
     browser.storage.local.set(content);
 }
@@ -37,3 +39,25 @@ export function loadPage(items, newPage, perPage){
     }
 }
 
+export async function getCurrentURL() {
+    let currentURL = ''
+    await browser.tabs.query({currentWindow: true, active: true})
+    .then((tabs) => currentURL = tabs[0].url);
+
+    return currentURL;
+}
+
+export const getNameFromURL = url => {
+    let nameURL = '';
+
+    REVIEW_STATE.map(index => {
+        if(url.indexOf(index)!==-1) {
+            let [, nameUpdate] = url.split(index);
+    
+            nameUpdate = nameUpdate.split('-').map(index => index.toUpperCase()[0]+index.slice(1)).join(' ');
+            nameURL=nameUpdate;
+        }
+
+    });
+    return nameURL;
+};

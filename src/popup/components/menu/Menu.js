@@ -22,6 +22,10 @@ import FolderIcon from '@material-ui/icons/Folder';
 import RestoreIcon from '@material-ui/icons/Restore';
 import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
 import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
+import ToDoListOutlinedIcon from '@material-ui/icons/ListAlt';
+import AddAddon from "../addAddon/addAddon";
+
+
 class Menu extends React.Component {
 
     openToDoList() {
@@ -62,6 +66,11 @@ class Menu extends React.Component {
                     url:"https://drive.google.com/file/d/1wJpEzB2X9IR2UXSBhcS8jMLwnsc2hShf/view?usp=sharing"
                   });
                 break;
+            case "todolist":
+                    browser.tabs.create({
+                        url:"./toDoList.html"
+                      });
+                    break;    
             default:
             //nothing
         }
@@ -76,7 +85,9 @@ class Menu extends React.Component {
                     <BottomNavigation onChange={this.handleOpenPage}>
                         <BottomNavigationAction label="Guide" value="guide" icon={<SlideshowOutlinedIcon />} />
                         <BottomNavigationAction label="Bugs" value="bugs" icon={<BugReportOutlinedIcon />} />
+                        <BottomNavigationAction label="ToDoList" value="todolist" icon={<ToDoListOutlinedIcon />} />
                     </BottomNavigation>
+                    <AddAddon />
                     <MenuList>
                         {/* <MenuItem onClick={this.openToDoList} disabled={true}><DoneAllIcon />  To-do List</MenuItem> */}
                         <MenuItem onClick={this.openCategories}><ListIcon /> Categories</MenuItem>

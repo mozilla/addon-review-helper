@@ -1,0 +1,40 @@
+.addon-section {
+  position: relative;
+}
+
+.addon-item {
+  text-align: left;
+  cursor: pointer;
+}
+
+.addon-section .close-addon {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.addon-section .close-addon:hover {
+  opacity: 1;
+}
+
+.addon-section .close-addon:before,
+.addon-section .close-addon:after {
+  position: absolute;
+  left: 8px;
+  content: " ";
+  height: 16px;
+  width: 2px;
+  background-color: #fff;
+}
+
+.addon-section .close-addon:before {
+  transform: rotate(45deg);
+}
+
+.addon-section .close-addon:after {
+  transform: rotate(-45deg);
+}

@@ -13,7 +13,8 @@ module.exports = {
         'sidebar': './src/sidebar/index.js',
         'background': './src/background/index.js',
         'content': "./src/contentScript/index.js",
-        'options': "./src/options/index.js"
+        'options': "./src/options/index.js",
+        'toDoList': './src/popup/components/toDoList/index.js'
     },
     output: {
         filename: '[name].js',
@@ -107,6 +108,15 @@ module.exports = {
             template: 'src/options/options.html',
             chunks: [
                 'options'
+            ],
+            cache: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'toDoList.html',
+            description: 'toDoList',
+            template: 'src/popup/components/toDoList/template.html',
+            chunks: [
+                'toDoList'
             ],
             cache: false
         })

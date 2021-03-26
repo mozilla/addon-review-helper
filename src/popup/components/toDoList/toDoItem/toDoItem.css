@@ -1,0 +1,87 @@
+.card {
+  position: relative;
+  width: 25%;
+  background: linear-gradient(to right, #ff416c, #ff4b2f);
+  border: 2px solid black;
+  border-radius: 20px;
+  margin: 20px;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px -10px rgba(0 0 0 0.24);
+}
+
+.card-title {
+  text-align: center;
+  padding: 10px 10px 20px 10px;
+  color: #fff;
+}
+
+.card-container {
+  text-align: left;
+  min-height: 400px;
+  margin: 20px;
+  color: #fff;
+}
+
+button {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.card .popuptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+}
+
+.card .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+.card .close {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.card .close[disabled] {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.card .close:hover {
+  opacity: 1;
+}
+.card .close:before,
+.card .close:after {
+  position: absolute;
+  left: 15px;
+  content: " ";
+  height: 33px;
+  width: 2px;
+  background-color: #fff;
+}
+.card .close:before {
+  transform: rotate(45deg);
+}
+.card .close:after {
+  transform: rotate(-45deg);
+}
