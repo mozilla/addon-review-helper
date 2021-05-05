@@ -83,7 +83,9 @@
     "https://reviewers.addons.allizom.org/*",
     "storage",
     "contextMenus",
-    "downloads"
+    "downloads",
+    "webRequest",
+    "webRequestBlocking"
   ],
 
   "options_ui": {

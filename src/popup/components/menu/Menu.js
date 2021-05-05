@@ -15,7 +15,7 @@ import { createNote } from "../../../redux/modules/notes/actions";
 import { setMenuType } from "../../../redux/modules/popup/actions";
 import { NOTE, CATEGORIES } from "../../../redux/modules/popup/types";
 import { setSidebarType } from "../../../redux/modules/sidebar/actions";
-import { NOTES } from "../../../redux/modules/sidebar/types";
+import { NOTES, NEW_REJECTIONS } from "../../../redux/modules/sidebar/types";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -24,7 +24,7 @@ import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
 import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
 import ToDoListOutlinedIcon from '@material-ui/icons/ListAlt';
 import AddAddon from "../addAddon/addAddon";
-
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 
 class Menu extends React.Component {
 
@@ -49,9 +49,13 @@ class Menu extends React.Component {
         console.log('Hidden add-ons')
     }
 
-
     handleCreateNote = () => {
         this.props.setMenuType(NOTE);
+    }
+
+    openNewRejections = () => {
+        this.props.setSidebarType(NEW_REJECTIONS);
+        browser.sidebarAction.open();
     }
 
     handleOpenPage = (event, newValue) => {
@@ -93,6 +97,9 @@ class Menu extends React.Component {
                         <MenuItem onClick={this.openCategories}><ListIcon /> Categories</MenuItem>
                         {/* <MenuItem onClick={this.openHistoryReview} disabled={true}><QueryBuilderIcon /> History Review</MenuItem> */}
                         <MenuItem onClick={this.openNotes}><NoteIcon /> Notes</MenuItem>
+                        {
+                            this.props.countNewRejections > 0 ? <MenuItem onClick={this.openNewRejections}><CloseOutlinedIcon /> New Rejections</MenuItem> : ''
+                        }
                         {/* <MenuItem onClick={this.openHiddenAddons} disabled={true}><VisibilityOffOutlinedIcon /> Hidden Add-ons</MenuItem> */}
                     </MenuList>
                 </Box>
@@ -118,7 +125,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state) => ({
     createNoteState: state.notes.createNote,
-    canCreateNote: state.notes.canCreateNote
+    canCreateNote: state.notes.canCreateNote,
+    countNewRejections: state.rejections.countNewRejections
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

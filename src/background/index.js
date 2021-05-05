@@ -1,20 +1,67 @@
 import store from '../redux/store';
-import { setTitle, setVersion } from "../redux/modules/currentAddon/actions";
-import { SET_TITLE, SET_VERSION, SET_NOTE_EXISTS } from "../redux/modules/currentAddon/types";
-import { createNote, setCurrentNote, canCreateNote } from "../redux/modules/notes/actions";
-import { SET_CURRENT_NOTE } from "../redux/modules/notes/types"
-import { setNotes } from "../redux/modules/sidebar/actions";
-import { setNoteExists } from "../redux/modules/currentAddon/actions";
-import { saveToStorage, checkIfMatches, sendToBackground, checkURLMatches } from "../utils/helpers";
-import { SAVE_TO_STORAGE, REVIEW_URL_MATCHES, UPDATE_REDUX, AMO_URL_MATCHES, AMO_URL_FILTERS, CHECK_WITH_ADDONS, REVIEW_URL_FILTERS, REDIRECT_TO } from "../utils/constants";
+import "./issues.js";
+import {
+    setTitle,
+    setVersion
+} from "../redux/modules/currentAddon/actions";
+import {
+    SET_TITLE,
+    SET_VERSION,
+    SET_NOTE_EXISTS
+} from "../redux/modules/currentAddon/types";
+import {
+    createNote,
+    setCurrentNote,
+    canCreateNote
+} from "../redux/modules/notes/actions";
+import {
+    SET_CURRENT_NOTE
+} from "../redux/modules/notes/types"
+import {
+    setNotes
+} from "../redux/modules/sidebar/actions";
+import {
+    setNoteExists
+} from "../redux/modules/currentAddon/actions";
+import {
+    saveToStorage,
+    checkIfMatches,
+    sendToBackground,
+    checkURLMatches
+} from "../utils/helpers";
+import {
+    SAVE_TO_STORAGE,
+    REVIEW_URL_MATCHES,
+    UPDATE_REDUX,
+    AMO_URL_MATCHES,
+    AMO_URL_FILTERS,
+    CHECK_WITH_ADDONS,
+    REVIEW_URL_FILTERS,
+    REDIRECT_TO
+} from "../utils/constants";
 
-import { MENU } from "../redux/modules/popup/types"
-import { setMenuType } from "../redux/modules/popup/actions"
-import { setCategories, setWithAddons, setSelectedCategories } from "../redux/modules/categories/actions"
-import { SET_SELECTED_CATEGORIES } from "../redux/modules/categories/types";
+import {
+    MENU
+} from "../redux/modules/popup/types"
+import {
+    setMenuType
+} from "../redux/modules/popup/actions"
+import {
+    setCategories,
+    setWithAddons,
+    setSelectedCategories
+} from "../redux/modules/categories/actions"
+import {
+    SET_SELECTED_CATEGORIES
+} from "../redux/modules/categories/types";
+import {
+    setCountNewRejections,
+    setNewRejections
+} from "../redux/modules/rejections/actions";
+
 console.log('Background.js file loaded');
 
-const MESAJ_TEXT="MESAJ_TEXT";
+const MESAJ_TEXT = "MESAJ_TEXT";
 
 browser.runtime.onMessage.addListener(handleMessages);
 
@@ -30,16 +77,20 @@ function handleMessages(message) {
             store.dispatch(setVersion(message.payload));
             break;
         case SET_CURRENT_NOTE:
-            store.dispatch(setCurrentNote({ payload: message.payload }))
+            store.dispatch(setCurrentNote({
+                payload: message.payload
+            }))
             break;
         case SET_NOTE_EXISTS:
             if (message.payload) {
-                browser.browserAction.setBadgeText(
-                    { text: "Note" }// object
+                browser.browserAction.setBadgeText({
+                        text: "Note"
+                    } // object
                 )
             } else {
-                browser.browserAction.setBadgeText(
-                    { text: "" }// object
+                browser.browserAction.setBadgeText({
+                        text: ""
+                    } // object
                 )
             }
             store.dispatch(setNoteExists(message.payload));
@@ -52,7 +103,7 @@ function handleMessages(message) {
         case MESAJ_TEXT:
             console.log('message payload', message.payload);
         default:
-        //do nothing
+            //do nothing
     }
 }
 
@@ -72,12 +123,13 @@ function updateRedux(tabId, url) {
     let isReview = checkIfMatches(REVIEW_URL_MATCHES, url);
     store.dispatch(canCreateNote(isReview))
 
-    browser.browserAction.setBadgeText(
-        { text: "" }// object
-    )
+    checkNewRejections();
+
     if (checkIfMatches(AMO_URL_MATCHES, url)) {
         if (store.getState().popup.menuType !== MENU)
-            store.dispatch(setMenuType({ 'payload': MENU }))
+            store.dispatch(setMenuType({
+                'payload': MENU
+            }))
 
         /**
          * Notes
@@ -89,8 +141,7 @@ function updateRedux(tabId, url) {
                 payload: res.notes
             }))
             browser.tabs.sendMessage(
-                tabId,
-                {
+                tabId, {
                     type: UPDATE_REDUX,
                     notes: res.notes,
                     isReview
@@ -122,8 +173,7 @@ function updateRedux(tabId, url) {
                     payload: res.withAddons
                 }))
                 browser.tabs.sendMessage(
-                    tabId,
-                    {
+                    tabId, {
                         type: CHECK_WITH_ADDONS,
                         withAddons: res.withAddons,
                         isReview,
@@ -137,38 +187,41 @@ function updateRedux(tabId, url) {
 
 browser.tabs.onActivated.addListener(handleActivated);
 
-async function handleActivated () {
-    let tabUrl = await browser.tabs.query({currentWindow: true, active: true});
+async function handleActivated() {
+    let tabUrl = await browser.tabs.query({
+        currentWindow: true,
+        active: true
+    });
 
-    if(checkURLMatches([...REVIEW_URL_FILTERS.slice(3,4)], tabUrl[0].url)) {
-         browser.contextMenus.create({
-             id: `id-${REDIRECT_TO.review}`,
-             title: `Go to ${REDIRECT_TO.review}`,
-             contexts: ["all"],
-         });
+    if (checkURLMatches([...REVIEW_URL_FILTERS.slice(3, 4)], tabUrl[0].url)) {
+        browser.contextMenus.create({
+            id: `id-${REDIRECT_TO.review}`,
+            title: `Go to ${REDIRECT_TO.review}`,
+            contexts: ["all"],
+        });
 
-         browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
+        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
 
-    } else if(checkURLMatches([...REVIEW_URL_FILTERS.slice(0,3)], tabUrl[0].url)) {
-         browser.contextMenus.create({
-             id: `id-${REDIRECT_TO.content}`,
-             title: `Go to ${REDIRECT_TO.content}`,
-             contexts: ["all"],
-         });
+    } else if (checkURLMatches([...REVIEW_URL_FILTERS.slice(0, 3)], tabUrl[0].url)) {
+        browser.contextMenus.create({
+            id: `id-${REDIRECT_TO.content}`,
+            title: `Go to ${REDIRECT_TO.content}`,
+            contexts: ["all"],
+        });
 
-         browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
+        browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
 
     } else {
         browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
         browser.contextMenus.remove(`id-${REDIRECT_TO.review}`);
-    } 
+    }
 }
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
     let urlUpdate;
-    if(info.menuItemId===`id-${REDIRECT_TO.review}`) {
+    if (info.menuItemId === `id-${REDIRECT_TO.review}`) {
         urlUpdate = info.pageUrl.replace(`/review-${REDIRECT_TO.content}/`, '/review/');
-        
+
         browser.contextMenus.create({
             id: `id-${REDIRECT_TO.content}`,
             title: `Click on ${REDIRECT_TO.content}`,
@@ -180,8 +233,8 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 
     } else {
         urlUpdate = info.pageUrl.replace('/review/', `/review-${REDIRECT_TO.content}/`)
-                        .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
-                        .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
+            .replace(`/review-${REDIRECT_TO.listed}/`, `/review-${REDIRECT_TO.content}/`)
+            .replace(`/review-${REDIRECT_TO.unlisted}/`, `/review-${REDIRECT_TO.content}/`);
 
         browser.contextMenus.create({
             id: `id-${REDIRECT_TO.review}`,
@@ -189,8 +242,36 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             contexts: ["all"],
         });
 
-        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);       
+        browser.contextMenus.remove(`id-${REDIRECT_TO.content}`);
     }
 
-    browser.tabs.update({url: urlUpdate});
+    browser.tabs.update({
+        url: urlUpdate
+    });
 });
+
+const checkNewRejections = () => {
+
+    let newRejections = [];
+    let fromStorage = browser.storage.local.get('newRejections');
+    fromStorage.then((res) => {
+        if (res.newRejections) {
+            newRejections = res.newRejections
+
+            browser.browserAction.setBadgeText({
+                    text: "NR"
+                } // object
+            )
+
+            store.dispatch(setNewRejections(newRejections));
+            store.dispatch(setCountNewRejections(newRejections.length))
+            
+        } else {
+            browser.browserAction.setBadgeText({
+                    text: ""
+                } // object
+            )
+        }
+    });
+
+}

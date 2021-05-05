@@ -16,6 +16,9 @@ import { setCategories, setCurrentCategory, setEditIndex,  setSelectedCategories
 import { addAddon, addItem, editItem, removeItem, removeAddon } from "./modules/toDoList/actions"
 import { ADD_ITEM, ADD_ADDON, REMOVE_ITEM, EDIT_ITEM, REMOVE_ADDON } from "./modules/toDoList/types";
 
+import { setCountNewRejections, setNewRejections } from "./modules/rejections/actions";
+import { SET_COUNT_NEW_REJECTIONS, SET_NEW_REJECTIONS } from "./modules/rejections/types";
+
 export default {
     CREATE_NOTE: createNote,
     SET_CURRENT_NOTE: setCurrentNote,
@@ -47,5 +50,8 @@ export default {
     ADD_ADDON: addAddon,
     EDIT_ITEM: editItem,
     REMOVE_ADDON: removeAddon,
+
+    SET_COUNT_NEW_REJECTIONS: setCountNewRejections,
+    SET_NEW_REJECTIONS: setNewRejections,
     
 }

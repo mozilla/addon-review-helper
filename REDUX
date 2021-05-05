@@ -31,3 +31,7 @@ Sidebar
     - notes
     - orderBy
     - searchBy
+
+Rejections
+    - newRejections
+    - countNewRejections

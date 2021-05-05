@@ -6,6 +6,7 @@ import sidebar from "./modules/sidebar/reducers";
 import popup from "./modules/popup/reducers";
 import categories from "./modules/categories/reducers";
 import toDoList from "./modules/toDoList/reducers";
+import rejections from "./modules/rejections/reducers";
 
 export default combineReducers({
     notes,
@@ -13,5 +14,6 @@ export default combineReducers({
     sidebar,
     popup,
     categories,
-    toDoList
+    toDoList,
+    rejections
 })

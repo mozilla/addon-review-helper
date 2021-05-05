@@ -7,6 +7,7 @@ export const SET_SELECTED_CATEGORY = "SET_SELECTED_CATEGORY";
 export const NOTES = "NOTES";
 export const NOTE = "NOTE";
 export const CATEGORY_ADDONS = "CATEGORY_ADDONS";
+export const NEW_REJECTIONS = "NEW_REJECTIONS";
 
 export const DATE_ASC = "DATE_ASC";
 export const DATE_DESC = "DATE_DESC";

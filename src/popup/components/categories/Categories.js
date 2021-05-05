@@ -28,6 +28,8 @@ import { CATEGORY_ADDONS } from "../../../redux/modules/sidebar/types";
 import { loadPage, loadItems } from "../../../utils/helpers";
 import { SketchPicker } from 'react-color';
 import reactCSS from 'reactcss'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 function random_color() {
     return Math.floor(Math.random() * 16777215).toString(16);
@@ -45,7 +47,8 @@ class Categories extends React.Component {
             currentPage: 1,
             totalPages: 1,
             displayColorPicker: false,
-            categoryToChange: null
+            categoryToChange: null,
+            issuesChecked: false
             
         }
     }
@@ -121,11 +124,13 @@ class Categories extends React.Component {
 
             if (_.isNumber(this.props.editIndex)) {
                 categories[this.props.editIndex].name = this.props.currentCategory;
+                categories[this.props.editIndex].issue = this.state.issuesChecked; 
                 this.props.setEditIndex(null);
             } else {
                 categories.push({
                     name: this.props.currentCategory,
-                    color: '#' + random_color()
+                    color: '#' + random_color(),
+                    issue: this.state.issuesChecked
                 });
             }
 
@@ -133,6 +138,9 @@ class Categories extends React.Component {
             this.props.setCategories(categories);
             sendToBackground(SAVE_TO_STORAGE, { 'categories': categories })
             this.props.setCurrentCategory('')
+            this.setState({
+                issuesChecked: false
+            })
 
             //pagination
 
@@ -150,7 +158,7 @@ class Categories extends React.Component {
             }
         });
         //delete from withAddons
-        if (this.props.withAddons[name]) {
+        if (this.props.withAddons && this.props.withAddons[name]) {
             let withAddons = this.props.withAddons;
             delete withAddons[name];
             this.props.setWithAddons(withAddons);
@@ -166,9 +174,18 @@ class Categories extends React.Component {
 
     handleEdit = (name) => {
         let indexOfCategory;
+
         this.props.categories.some((category, index) => {
-            indexOfCategory = index;
+            if(category.name === name){
+                indexOfCategory = index;
+                if(category.issue)
+                    this.setState({
+                        issuesChecked: true
+                    })
+
+            }
         })
+
         this.props.setCurrentCategory(name);
         this.props.setEditIndex(indexOfCategory);
     }
@@ -187,7 +204,8 @@ class Categories extends React.Component {
         this.setState({
             pageCategories: results.pageItems,
             currentPage: results.currentPage,
-            currentCount: results.currentCount
+            currentCount: results.currentCount,
+            issuesChecked: false
         })
     }
 
@@ -202,6 +220,12 @@ class Categories extends React.Component {
         this.props.setSelectedCategory(name)
         this.props.setSidebarType(CATEGORY_ADDONS);
         browser.sidebarAction.open()
+    }
+
+    handleIssueChange = () => {
+        this.setState({
+            issuesChecked: !this.state.issuesChecked
+        })
     }
 
     render() {
@@ -231,7 +255,7 @@ class Categories extends React.Component {
 
         return (
             <div className="categories-div">
-                <Grid container spacing={3}>
+                <Grid container spacing={4}>
                     <Grid item xs={2}>
                         <Button
                             startIcon={<ArrowBackIcon />}
@@ -241,7 +265,8 @@ class Categories extends React.Component {
                             Back
                         </Button>
                     </Grid>
-                    <Grid item xs={8}>
+                   
+                    <Grid item xs={6}>
                         <TextField
                             id="outlined-basic"
                             label="Category"
@@ -252,6 +277,21 @@ class Categories extends React.Component {
                             onKeyDown={this.handleKeyPressed}
                         />
                     </Grid>
+
+                    <Grid item xs={2}>
+                        <FormControlLabel
+                            control={
+                            <Checkbox
+                                checked={this.state.issuesChecked}
+                                onChange={this.handleIssueChange}
+                                name="checkedB"
+                                color="primary"
+                            />
+                            }
+                            label="Issue"
+                        />
+                    </Grid>
+
                     <Grid item xs={2}>
                         <Button
                             variant="contained"
