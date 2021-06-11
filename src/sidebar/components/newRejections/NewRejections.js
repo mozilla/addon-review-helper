@@ -7,6 +7,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { getNameFromURL } from "../../../utils/helpers";
+import { setSidebarType, setSidebarTitle, setSidebarContent, setCurrentPage, setOrderBy, setSearchBy } from "../../../redux/modules/sidebar/actions"
+import { REJECTION } from "../../../redux/modules/sidebar/types"
 
 class NewRejections extends React.Component {
 
@@ -27,11 +29,19 @@ class NewRejections extends React.Component {
                 </div>
             )
         })
-
+''
         return items;
     }
 
+    handleListClick = (data) => {
+        console.log("data", data)
+        this.props.setSidebarTitle(data.addonUrl);
+        this.props.setSidebarContent(data.review);
+        this.props.setSidebarType(REJECTION);
+    }
+
     render() {
+
         return (
             <List>
                 {
@@ -42,8 +52,14 @@ class NewRejections extends React.Component {
     }
 }
 
+const mapDispatchToProps = {
+    setSidebarType,
+    setSidebarTitle,
+    setSidebarContent
+}
+
 const mapStateToProps = (state) => ({
     newRejections: state.rejections.newRejections
 })
 
-export default connect(mapStateToProps, null)(NewRejections);
+export default connect(mapStateToProps, mapDispatchToProps)(NewRejections);

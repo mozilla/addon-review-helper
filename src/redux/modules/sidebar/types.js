@@ -8,6 +8,7 @@ export const NOTES = "NOTES";
 export const NOTE = "NOTE";
 export const CATEGORY_ADDONS = "CATEGORY_ADDONS";
 export const NEW_REJECTIONS = "NEW_REJECTIONS";
+export const REJECTION = "REJECTION";
 
 export const DATE_ASC = "DATE_ASC";
 export const DATE_DESC = "DATE_DESC";
